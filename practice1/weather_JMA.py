@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 @author: Linda Tai
+#從日本氣象廳(JMA)網頁讀取某地某年的氣象資料， 將表格內容存成csv檔案。
+ 再用matplotlib畫出每月趨勢圖
 """
-#從日本氣象廳(JMA)網頁讀取某地某年的氣象資料，將表格內容存成csv檔案。並用matplotlib畫出每月趨勢圖
+
 
 import requests
 from bs4 import BeautifulSoup
@@ -65,7 +67,7 @@ y4 = dataFrame_avgTemp(df4)
 
 
 
-#某一年 幾個不同city的avg. temp==========================================
+#某一年 幾個不同city的avg. temp ==========================================
 fig1  = plt.figure(figsize=(10,6))
 x_month=range(1,13)
 
@@ -88,7 +90,7 @@ plt.savefig('weatherJMA_cities_avg_Temp.png') #白底
 
 
 
-#某一city:3年來的data===================================================
+#某一city: 3年來的data ===================================================
 url2022 = head + loc4 + '&year=2022&month=1&day=1&view='
 url2021 = head + loc4 + '&year=2021&month=1&day=1&view='
 url2020 = head + loc4 + '&year=2020&month=1&day=1&view='
