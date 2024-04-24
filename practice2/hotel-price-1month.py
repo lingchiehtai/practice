@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Apr 10 12:43:29 2024
-
-@author: Linda
 """
 
 import requests

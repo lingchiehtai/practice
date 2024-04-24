@@ -1,4 +1,6 @@
-
+"""
+@author: Linda Tai
+"""
 
 #plot
 import matplotlib.pyplot as plt
