@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 @author: Linda Tai
+觀察某飯店某月份的房價趨勢
+ex:某天的房價網址 https://www.booking.com/hotel/jp/mitsui-garden-kyoto-kawaramachi-jokyoji.zh-tw.html?
+checkin=2024-06-22&checkout=2024-06-23&do_availability_check=1&group_adults=2&group_children=0&selected_currency=hotel_currency
+
 """
 
 import requests
@@ -33,6 +37,7 @@ def GetRoomPrice(bookURL, roomTypeBlockID):
 
 #改變網址參數以取得不同飯店/不同日期的房價
 mon1 = 12  #需指定的參數 #某月份的房價
+year = 2024
 
 dict1 = {1:31, 2:28, 3:31, 4:30, 5:31, 6:30, 7:31, 8:31, 9:30, 10:31, 11:30, 12:31} #每個月有幾天
 StartDate = 1
@@ -41,7 +46,7 @@ EndDate = dict1[mon1]
 with open('hotel-price-1month.csv', 'a', newline="") as file1:
     writer = csv.writer(file1)
     
-    y1 = 2024
+    y1 = year
     y2 = y1
     
     for date1 in range(StartDate, EndDate+1):
@@ -93,7 +98,7 @@ with open('hotel-price-1month.csv', 'a', newline="") as file1:
         URL = hotel + f'checkin={y1}-{mon1:02d}-{date1:02d}&checkout={y2}-{mon2:02d}-{date2:02d}&do_availability_check=1&group_adults=2&group_children=0&selected_currency=hotel_currency'           
     
         roomType, roomPrice = GetRoomPrice(URL, dataBlockID)
-        date = f'2024/{mon1:02d}/{date1:02d}'
+        date = f'{year}/{mon1:02d}/{date1:02d}'
         writer.writerow([date, roomType, roomPrice])
         print(date)
 
