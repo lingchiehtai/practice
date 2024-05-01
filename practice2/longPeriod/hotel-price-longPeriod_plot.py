@@ -11,7 +11,7 @@ with open('hotel-price-longPeriod_h1_mitsui.csv', newline='') as csvfile:
     x1 = []
     y1 = []
     for row in rows:
-        x1.append(row[0][5:]) #12/31 (year not shown)
+        x1.append(row[0][5:]) # 2024/10/31 => 10/31 (year not shown)
         y1.append(int(row[2])) 
 
 
@@ -73,7 +73,7 @@ plt.ylabel('Price (yen)', size=20) #, color = 'blue')
 
 plt.title('Daily Room Rate', size=14) #, color = 'blue')
 
-#plt.savefig('hotel-price-longPeriod_1.png') 
+#plt.savefig('hotel-price-longPeriod_avg_1.png') 
 
 
 ##合理價出現機率
