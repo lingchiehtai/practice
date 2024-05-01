@@ -3,7 +3,7 @@
 @author: Linda Tai
 """
 
-#爬取臺灣銀行牌告匯率   
+#爬取臺灣銀行牌告匯率，並畫出歷史趨勢圖   
 
 import requests
 from bs4 import BeautifulSoup
@@ -55,6 +55,8 @@ with open('exchange_rate_history.csv', 'a', newline='', encoding='utf-8') as csv
 # 讀取 csv 檔案內容
 x1=[]
 y_USDbuy, y_USDsell = [], []
+y_JPYbuy, y_JPYsell = [], []
+y_EURbuy, y_EURsell = [], []
 with open('exchange_rate_history.csv', newline='', encoding='utf-8') as csvfile: 
     rows = csv.reader(csvfile)   
     for row in rows:
@@ -63,6 +65,10 @@ with open('exchange_rate_history.csv', newline='', encoding='utf-8') as csvfile:
         x1.append(row[0])
         y_USDbuy.append(row[1])
         y_USDsell.append(row[2])
+        y_JPYbuy.append(row[3])
+        y_JPYsell.append(row[4])
+        y_EURbuy.append(row[5])
+        y_EURsell.append(row[6])
 
 #plot
 fig1  = plt.figure(figsize=(10,6), dpi=120)
@@ -77,3 +83,31 @@ plt.xlabel('Date', size=20)
 plt.ylabel('Exchange Rate', size=20) 
 plt.title('Cash Rate (USD)', size=18) 
 plt.savefig('exchange_rate_USD.png') 
+
+#plot
+fig2  = plt.figure(figsize=(10,6), dpi=120)
+plt.axes([0.15, 0.15, 0.75, 0.75]) #axes( [x, y, width, height] ): x,y為和左下角的相對位置
+plt.plot(x1, y_JPYbuy, color = 'red', label='Buying', marker='o', markersize=12, linestyle = '--', linewidth=3)
+plt.plot(x1, y_JPYsell, color = 'blue', label='Selling', marker='o', markersize=12, linestyle = '--', linewidth=3)
+
+plt.legend(loc = 'best')
+plt.xticks(fontsize=14, rotation=0)
+plt.yticks(fontsize=14, rotation=0)
+plt.xlabel('Date', size=20) 
+plt.ylabel('Exchange Rate', size=20) 
+plt.title('Cash Rate (JPY)', size=18) 
+plt.savefig('exchange_rate_JPY.png') 
+
+#plot
+fig3  = plt.figure(figsize=(10,6), dpi=120)
+plt.axes([0.15, 0.15, 0.75, 0.75]) #axes( [x, y, width, height] ): x,y為和左下角的相對位置
+plt.plot(x1, y_EURbuy, color = 'red', label='Buying', marker='o', markersize=12, linestyle = '--', linewidth=3)
+plt.plot(x1, y_EURsell, color = 'blue', label='Selling', marker='o', markersize=12, linestyle = '--', linewidth=3)
+
+plt.legend(loc = 'best')
+plt.xticks(fontsize=14, rotation=0)
+plt.yticks(fontsize=14, rotation=0)
+plt.xlabel('Date', size=20) 
+plt.ylabel('Exchange Rate', size=20) 
+plt.title('Cash Rate (EUR)', size=18) 
+plt.savefig('exchange_rate_EUR.png') 
