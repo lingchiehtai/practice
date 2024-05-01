@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Apr 30 12:32:02 2024
-
-@author: Linda
+@author: Linda Tai
 """
 
 #爬取臺灣銀行牌告匯率   
@@ -12,6 +10,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import csv
 import datetime
+import matplotlib.pyplot as plt
+
 
 date = datetime.date.today()
 #print(date)
@@ -19,8 +19,8 @@ dd=str(date).split("-")
 dd=dd[1]+'/'+dd[2]
 
 url = 'https://rate.bot.com.tw/xrt?Lang=zh-TW'
-web = requests.get(url)                          # 取得網頁內容
-soup = BeautifulSoup(web.text, "html.parser")    # 轉換內容
+res = requests.get(url)                          # 取得網頁內容
+soup = BeautifulSoup(res.text, "html.parser")    # 轉換內容
 datas = soup.find_all('tr') 
 list1 = []
 for i in datas:
@@ -47,3 +47,6 @@ with open('exchange_rate_history.csv', 'a', newline='', encoding='utf-8') as csv
     writer = csv.writer(csvfile)
     #writer.writerow(['date', 'USDbuy', 'USDsell', 'JPYbuy', 'JPYsell', 'EURbuy', 'EURsell'])
     writer.writerow([dd, USD_buy, USD_sell, JPY_buy, JPY_sell, EUR_buy, EUR_sell])
+
+
+#plot
