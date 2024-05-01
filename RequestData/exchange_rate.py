@@ -49,4 +49,31 @@ with open('exchange_rate_history.csv', 'a', newline='', encoding='utf-8') as csv
     writer.writerow([dd, USD_buy, USD_sell, JPY_buy, JPY_sell, EUR_buy, EUR_sell])
 
 
+
+#====================================
+
+# 讀取 csv 檔案內容
+x1=[]
+y_USDbuy, y_USDsell = [], []
+with open('exchange_rate_history.csv', newline='', encoding='utf-8') as csvfile: 
+    rows = csv.reader(csvfile)   
+    for row in rows:
+        if rows.line_num == 1: #忽略第一列的title
+            continue
+        x1.append(row[0])
+        y_USDbuy.append(row[1])
+        y_USDsell.append(row[2])
+
 #plot
+fig1  = plt.figure(figsize=(10,6), dpi=120)
+plt.axes([0.15, 0.15, 0.75, 0.75]) #axes( [x, y, width, height] ): x,y為和左下角的相對位置
+plt.plot(x1, y_USDbuy, color = 'red', label='Buying', marker='o', markersize=12, linestyle = '--', linewidth=3)
+plt.plot(x1, y_USDsell, color = 'blue', label='Selling', marker='o', markersize=12, linestyle = '--', linewidth=3)
+
+plt.legend(loc = 'best')
+plt.xticks(fontsize=14, rotation=0)
+plt.yticks(fontsize=14, rotation=0)
+plt.xlabel('Date', size=20) 
+plt.ylabel('Exchange Rate', size=20) 
+plt.title('Cash Rate (USD)', size=18) 
+plt.savefig('exchange_rate_USD.png') 
