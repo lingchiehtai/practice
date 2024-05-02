@@ -66,13 +66,10 @@ for i in range(div-1):
     avg1[start+6] = int(sum(y1[start:start+14])/14)
 
 plt.bar(x1, avg1, width=8.0, label='Avg.')
-
 plt.legend(loc = 'best') #'upper right'
 plt.xlabel('Date', size=20) #, color = 'blue')
 plt.ylabel('Price (yen)', size=20) #, color = 'blue')
-
 plt.title('Daily Room Rate', size=14) #, color = 'blue')
-
 #plt.savefig('hotel-price-longPeriod_avg_1.png') 
 
 

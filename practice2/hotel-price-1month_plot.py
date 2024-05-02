@@ -74,7 +74,7 @@ plt.ylabel('Price (yen)', size=20) #, color = 'blue')
 
 plt.title('Daily Room Rate', size=18) #, color = 'blue')
 
-stride = 7 #每n個刻度顯示一次標籤\n",
+stride = 7 #每n個刻度顯示一次標籤",
 plt.xticks(ticks=x1[1:62:stride], labels=x1[1:62:stride], fontsize=16, rotation=0)
 plt.ylim(5000, 85000)
 labely= ['10k','20k','30k','40k','50k','60k','70k','80k']
@@ -92,8 +92,8 @@ plt.grid(
 plt.savefig('hotel-price-1month_1.png') 
 
 
-########################
-##合理價出現機率
+#----------------------------------------------
+#合理價出現機率
 
 def countReasonablePrice(y_price):
     #y_price_min = min(y_price)
