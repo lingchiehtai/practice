@@ -241,9 +241,9 @@ import numpy as np
 c1, c2, c3 = 0, 0, 0
 totalNum = 0 
 
-#dir_name = './tmp/test-paper/'
+dir_name = './tmp/test-paper/'
 #dir_name = './tmp/test-rock/'
-dir_name = './tmp/test-scissors/'
+#dir_name = './tmp/test-scissors/'
 for filename in os.listdir(dir_name):
 
     # predicting other images
