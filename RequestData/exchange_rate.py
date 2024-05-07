@@ -62,12 +62,12 @@ with open('exchange_rate_history.csv', newline='', encoding='utf-8') as csvfile:
         if rows.line_num == 1: #忽略第一列的title
             continue
         x1.append(row[0])
-        y_USDbuy.append(row[1])
-        y_USDsell.append(row[2])
-        y_JPYbuy.append(row[3])
-        y_JPYsell.append(row[4])
-        y_EURbuy.append(row[5])
-        y_EURsell.append(row[6])
+        y_USDbuy.append(float(row[1]))
+        y_USDsell.append(float(row[2]))
+        y_JPYbuy.append(float(row[3]))
+        y_JPYsell.append(float(row[4]))
+        y_EURbuy.append(float(row[5]))
+        y_EURsell.append(float(row[6]))
 
 #plot
 fig1  = plt.figure(figsize=(10,6), dpi=120)
