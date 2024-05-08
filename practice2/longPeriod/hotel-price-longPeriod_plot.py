@@ -32,8 +32,8 @@ with open('hotel-price-longPeriod_h3_daiwa-roynet.csv', newline='') as csvfile3:
 fig1 = plt.figure(figsize=(12,6), dpi=120)  #Default=>dpi=80
 plt.axes([0.10, 0.15, 0.85, 0.75]) #axes( [x, y, width, height] ): x,y為和左下角的相對位置
 plt.plot(x1, y1, color = 'darkred', marker='.', linestyle = '--', label='h1')
-#plt.plot(x1, y2, color = 'g', marker='.', linestyle = '--', label='h2')
-#plt.plot(x1, y3, color = 'b', marker='.', linestyle = '--', label='h3')
+#plt.plot(x1, y2, color = 'darkblue', marker='.', linestyle = '--', label='h2')
+#plt.plot(x1, y3, color = 'darkblue', marker='.', linestyle = '--', label='h3')
 
 
 stride = 7 #每n個刻度顯示一次標籤\n",
@@ -43,6 +43,10 @@ plt.xlim(0, len(y1)-1)
 plt.ylim(5000, 85000)
 labely= ['10k','20k','30k','40k','50k','60k','70k','80k']
 plt.yticks([10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000], labels=labely, fontsize=16)
+# plt.ylim(5000, 35000)
+# labely= ['10k','20k','30k']
+# plt.yticks([10000, 20000, 30000], labels=labely, fontsize=16)
+
 plt.yticks(fontsize=16)
 
 
@@ -59,34 +63,40 @@ plt.grid(
 
 
 ##### Average price for 2 weeks
-div=len(y1)//14
-avg1=[0]*len(y1)
+yprice = y1
+div=len(yprice)//14
+avg1=[0]*len(yprice)
 for i in range(div-1):
     start=5+14*i
-    avg1[start+6] = int(sum(y1[start:start+14])/14)
+    avg1[start+6] = int(sum(yprice[start:start+14])/14)
 
 plt.bar(x1, avg1, width=8.0, label='Avg.')
+
 plt.legend(loc = 'best') #'upper right'
 plt.xlabel('Date', size=20) #, color = 'blue')
 plt.ylabel('Price (yen)', size=20) #, color = 'blue')
+
 plt.title('Daily Room Rate', size=14) #, color = 'blue')
-#plt.savefig('hotel-price-longPeriod_avg_1.png') 
+
+plt.savefig('hotel-price-longPeriod_avg_1.png') 
 
 
-##合理價出現機率
-def countReasonablePrice(y_price):
-    #y_price_min = min(y_price)
-    y_price_len = len(y_price)
+
+
+# ##合理價出現機率
+# def countReasonablePrice(y_price):
+#     #y_price_min = min(y_price)
+#     y_price_len = len(y_price)
     
-    #合理價=最低價的1.3倍
-    y_price_index = [i for i in range(len(y_price)) if y_price[i] < min(y_price)*1.3 ] 
-    y_price_low_count = len(y_price_index) #合理價次數
-    print(f'{y_price_low_count}, {y_price_len}, {100*y_price_low_count/y_price_len:.1f}%') #合理價出現機率
+#     #合理價=最低價的1.3倍
+#     y_price_index = [i for i in range(len(y_price)) if y_price[i] < min(y_price)*1.3 ] 
+#     y_price_low_count = len(y_price_index) #合理價次數
+#     print(f'{y_price_low_count}, {y_price_len}, {100*y_price_low_count/y_price_len:.1f}%') #合理價出現機率
 
-#1~2 月
-y1p = y1[92:151]
-y2p = y2[92:151]
-y3p = y3[92:151]
-countReasonablePrice(y1p)
-countReasonablePrice(y2p)
-countReasonablePrice(y3p)
+# #1~2 月
+# y1p = y1[92:151]
+# y2p = y2[92:151]
+# y3p = y3[92:151]
+# countReasonablePrice(y1p)
+# countReasonablePrice(y2p)
+# countReasonablePrice(y3p)
