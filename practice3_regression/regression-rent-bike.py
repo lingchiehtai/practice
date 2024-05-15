@@ -107,7 +107,7 @@ test_results['dnn_model'] = dnn_model.evaluate(
 #畫圖 Loss vs. Epoch
 def plot_loss(history):
     plt.figure(figsize=(12,6), dpi=90)
-    plt.axes([0.10, 0.16, 0.85, 0.75]) #axes( [x, y, width, height] )
+    plt.axes([0.12, 0.16, 0.85, 0.75]) #axes( [x, y, width, height] )
     plt.plot(history.history['loss'], linewidth=3, label='train_loss')
     plt.plot(history.history['val_loss'], linewidth=3, label='val_loss')
     #plt.xlim([0, 150])
@@ -131,7 +131,7 @@ test_prediction = dnn_model.predict(test_features).flatten() #1D-data
 
 def plot_predictions(x, y):
     plt.figure(figsize=(12,6), dpi=90)
-    plt.axes([0.10, 0.16, 0.85, 0.75])
+    plt.axes([0.12, 0.16, 0.85, 0.75])
     plt.scatter(test_labels, test_prediction, c='g',label='Real')
     
     plt.plot(x, y, color='k', linewidth=3, label='Prediction')
