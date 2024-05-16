@@ -94,7 +94,7 @@ dnn_model.compile(
 history = dnn_model.fit(
         train_features,
         train_labels,
-        epochs=150,
+        epochs=200,
         # logging.
         verbose=2,
         # Calculate validation results on 20% of the training data.
