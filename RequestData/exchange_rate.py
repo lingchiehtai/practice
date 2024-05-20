@@ -74,10 +74,11 @@ fig1  = plt.figure(figsize=(10,6), dpi=120)
 plt.axes([0.15, 0.15, 0.75, 0.75]) #axes( [x, y, width, height] ): x,y為和左下角的相對位置
 plt.plot(x1, y_USDbuy, color = 'red', label='Buying', marker='o', markersize=12, linestyle = '--', linewidth=3)
 plt.plot(x1, y_USDsell, color = 'blue', label='Selling', marker='o', markersize=12, linestyle = '--', linewidth=3)
-
+stride = 5
 plt.legend(loc = 'best')
-plt.xticks(fontsize=14, rotation=0)
+plt.xticks(ticks=x1[::stride], labels=x1[::stride], fontsize=14, rotation=30)
 plt.yticks(fontsize=14, rotation=0)
+plt.grid(True)
 plt.xlabel('Date', size=20) 
 plt.ylabel('Exchange Rate', size=20) 
 plt.title('Cash Rate (USD)', size=18) 
@@ -88,10 +89,11 @@ fig2  = plt.figure(figsize=(10,6), dpi=120)
 plt.axes([0.15, 0.15, 0.75, 0.75]) #axes( [x, y, width, height] ): x,y為和左下角的相對位置
 plt.plot(x1, y_JPYbuy, color = 'red', label='Buying', marker='o', markersize=12, linestyle = '--', linewidth=3)
 plt.plot(x1, y_JPYsell, color = 'blue', label='Selling', marker='o', markersize=12, linestyle = '--', linewidth=3)
-
+stride = 5
 plt.legend(loc = 'best')
-plt.xticks(fontsize=14, rotation=0)
+plt.xticks(ticks=x1[::stride], labels=x1[::stride], fontsize=14, rotation=30)
 plt.yticks(fontsize=14, rotation=0)
+plt.grid(True)
 plt.xlabel('Date', size=20) 
 plt.ylabel('Exchange Rate', size=20) 
 plt.title('Cash Rate (JPY)', size=18) 
@@ -102,10 +104,11 @@ fig3  = plt.figure(figsize=(10,6), dpi=120)
 plt.axes([0.15, 0.15, 0.75, 0.75]) #axes( [x, y, width, height] ): x,y為和左下角的相對位置
 plt.plot(x1, y_EURbuy, color = 'red', label='Buying', marker='o', markersize=12, linestyle = '--', linewidth=3)
 plt.plot(x1, y_EURsell, color = 'blue', label='Selling', marker='o', markersize=12, linestyle = '--', linewidth=3)
-
+stride = 5
 plt.legend(loc = 'best')
-plt.xticks(fontsize=14, rotation=0)
+plt.xticks(ticks=x1[::stride], labels=x1[::stride], fontsize=14, rotation=30)
 plt.yticks(fontsize=14, rotation=0)
+plt.grid(True)
 plt.xlabel('Date', size=20) 
 plt.ylabel('Exchange Rate', size=20) 
 plt.title('Cash Rate (EUR)', size=18) 
