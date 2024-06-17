@@ -84,7 +84,7 @@ plt.grid(True)
 plt.xlabel('Date', size=20) 
 plt.ylabel('Exchange Rate', size=20) 
 plt.title('Cash Rate (USD)', size=18) 
-plt.tight_layout()
+plt.tight_layout() #子圖表保持合適的間距
 #plt.savefig('exchange_rate_USD.png') 
 
 #plot
