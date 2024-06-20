@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Apr 10 12:43:29 2024
-
 @author: Linda
+網路爬蟲 訂房網站
 """
 
 import requests
