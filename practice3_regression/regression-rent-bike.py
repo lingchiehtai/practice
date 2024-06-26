@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed May 15 12:41:12 2024
-
 @author: Linda
+seoul_bike_sharing_demand
 """
+
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
@@ -27,7 +28,7 @@ rawdata = dataset.copy()
 dataset.tail()
 dataset.isna().sum()  #統計 np.nan 數量
 
-"""### 不同参数之間的關係"""
+""" 不同参数之間的關係 """
 sns.pairplot(dataset[['Rented Bike Count', 'Hour', 'Temperature','Humidity','Wind speed','Visibility']], diag_kind='kde')
 
 
