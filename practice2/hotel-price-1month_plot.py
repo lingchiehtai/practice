@@ -33,7 +33,6 @@ with open('hotel-price-1month_h4_nohga.csv', newline='') as csvfile4:
     y4 = []
     for row in rows:
         y4.append(int(row[2]))
-
        
 
 with open('hotel-price-1month_h5_cross.csv', newline='') as csvfile5:
@@ -99,7 +98,7 @@ def countReasonablePrice(y_price):
     #y_price_min = min(y_price)
     y_price_len = len(y_price)
     
-    #合理價=最低價的1.3倍
+    #合理價 = 最低價的1.3倍
     y_price_index = [i for i in range(len(y_price)) if y_price[i] < min(y_price)*1.3 ] 
     y_price_low_count = len(y_price_index) #合理價次數
     print(f'{y_price_low_count}, {y_price_len}, {100*y_price_low_count/y_price_len:.1f}%') #合理價出現機率
