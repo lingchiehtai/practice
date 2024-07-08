@@ -98,7 +98,7 @@ df2022,city4 = getTableData(url2022)
 df2021,city4 = getTableData(url2021)
 df2020,city4 = getTableData(url2020)
 
-#snow(cm)
+#snow (unit:cm)
 def dataFrame_snow(dataF):
     ysnow = dataF.iloc[2:, 21].values
     ysnow = [float(ysnow[i]) for i in range(len(ysnow))]
@@ -110,6 +110,7 @@ ysnow2022 = dataFrame_snow(df2022)
 ysnow2021 = dataFrame_snow(df2021)
 ysnow2020 = dataFrame_snow(df2020)
 
+#plot 
 x_shift = ['10','11','12','1','2','3','4']
 fig2 = plt.figure(figsize=(10,6))
 plt.plot(x_shift, ysnow2023, color = 'blue', label='2023', marker='o', markersize=12, linestyle = '--', linewidth=3)
