@@ -9,7 +9,7 @@ Created on Tue Jul 23 22:31:07 2024
 #https://steam.oxxostudio.tw/category/python/spider/radar.html
 
 import requests
-#import datetime
+import datetime
 
 url = 'https://opendata.cwa.gov.tw/fileapi/v1/opendataapi/O-A0058-003?Authorization=rdec-key-123-45678-011121314&format=JSON'
 data = requests.get(url)  
@@ -34,3 +34,16 @@ picFilename=f'pic_雷達回波圖_{date}_{time}.png'
 print(picFilename)
 with open(picFilename, "wb") as f:
     f.write(picFile.content)
+    
+    
+#===============================
+#使用 requests 模組下載網頁中的 picture
+timeTW = datetime.datetime.now()
+
+picURL = "https://www.cwa.gov.tw/Data/typhoon/TY_WARN/B20.png"
+picFile = requests.get(picURL, allow_redirects=True)
+picFilename='pic_颱風警報_' + timeTW.strftime("%Y%m%d_%H%M") +'.png'
+print(picFilename)
+with open(picFilename, "wb") as f: 
+    f.write(picFile.content)
+
