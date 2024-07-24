@@ -37,7 +37,7 @@ with open(picFilename, "wb") as f:
     
     
 #===============================
-#使用 requests 模組下載網頁中的 picture
+#使用 requests 模組下載cwa網頁中的 颱風警報路徑圖
 timeTW = datetime.datetime.now()
 
 picURL = "https://www.cwa.gov.tw/Data/typhoon/TY_WARN/B20.png"
