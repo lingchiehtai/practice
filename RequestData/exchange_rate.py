@@ -41,8 +41,8 @@ USD_buy = df1.iloc[0,1]
 USD_sell = df1.iloc[0,2]
 JPY_buy = df1.iloc[7,1]
 JPY_sell = df1.iloc[7,2]
-EUR_buy = df1.iloc[13,1]
-EUR_sell = df1.iloc[13,2]
+EUR_buy = df1.iloc[12,1]
+EUR_sell = df1.iloc[12,2]
 
 with open('exchange_rate_history.csv', 'a', newline='', encoding='utf-8') as csvfile:
     writer = csv.writer(csvfile)
