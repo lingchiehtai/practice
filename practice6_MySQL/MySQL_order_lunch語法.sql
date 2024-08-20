@@ -44,5 +44,5 @@
     SELECT Restaurant, COUNT(Restaurant)
     FROM TodayOrder
     GROUP BY Restaurant
-    ORDER BY COUNT(Restaurant) DESC
+    ORDER BY COUNT(Restaurant) DESC;
 	
