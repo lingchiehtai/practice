@@ -7,3 +7,5 @@ Practice3: regression for seoul bike sharing demand data
 Practice4: image classification for three classes
 
 Practice5: get images with Selenium WebDriver
+
+Practice6: employees' meal statistical data
