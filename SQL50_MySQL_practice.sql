@@ -1,6 +1,7 @@
-#[Select]
+
 #https://leetcode.com/studyplan/top-sql-50/
 
+#[Select]
 
 #1757. Recyclable and Low Fat Products
 select product_id 
@@ -27,3 +28,15 @@ ORDER BY id;
 select tweet_id 
 from Tweets 
 where length(content)>15
+
+
+#[Basic Joins]
+#1378. Replace Employee ID With The Unique Identifier
+select unique_id, name 
+from Employees 
+left join EmployeeUNI on Employees.id=EmployeeUNI.id
+
+#1068. Product Sales Analysis I
+select product_name, year, price 
+from Sales left join Product 
+on Sales.product_id=Product.product_id 
