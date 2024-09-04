@@ -40,3 +40,10 @@ left join EmployeeUNI on Employees.id=EmployeeUNI.id
 select product_name, year, price 
 from Sales left join Product 
 on Sales.product_id=Product.product_id 
+
+#197. Rising Temperature
+SELECT w1.id
+FROM Weather w1 
+JOIN Weather w2
+ON w1.recordDate = DATE_ADD(w2.recordDate,INTERVAL 1 DAY)
+WHERE w1.temperature > w2.temperature
