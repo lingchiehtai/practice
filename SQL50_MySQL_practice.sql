@@ -56,3 +56,9 @@ from Activity
 group by machine_id, process_id) as table_diff
 group by machine_id
 
+#577. Employee Bonus
+select name, bonus
+from Employee EE left join Bonus BB
+on EE.empId = BB.empId
+where BB.bonus<1000 or BB.bonus is NULL
+
