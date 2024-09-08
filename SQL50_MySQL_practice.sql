@@ -70,3 +70,11 @@ on S1.student_id = EE.student_id
 and S2.subject_name = EE.subject_name
 group by S1.student_id, S2.subject_name
 order by S1.student_id, S2.subject_name
+
+#620. Not Boring Movies
+select id , movie, description, rating
+from Cinema
+where id % 2 !=0 and description !='boring'
+order by rating desc
+
+
