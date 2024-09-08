@@ -62,3 +62,11 @@ from Employee EE left join Bonus BB
 on EE.empId = BB.empId
 where BB.bonus<1000 or BB.bonus is NULL
 
+#1280. Students and Examinations
+select S1.student_id, S1.student_name, S2.subject_name, count(EE.subject_name) as attended_exams
+from (Students S1 cross join Subjects S2)
+left join Examinations EE
+on S1.student_id = EE.student_id
+and S2.subject_name = EE.subject_name
+group by S1.student_id, S2.subject_name
+order by S1.student_id, S2.subject_name
