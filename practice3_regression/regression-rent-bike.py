@@ -28,7 +28,7 @@ rawdata = dataset.copy()
 dataset.tail()
 dataset.isna().sum()  #統計 np.nan 數量
 
-""" 不同参数之間的關係 """
+""" 畫出不同参数之間的關係 """
 sns.pairplot(dataset[['Rented Bike Count', 'Hour', 'Temperature','Humidity','Wind speed','Visibility']], diag_kind='kde')
 
 
@@ -44,7 +44,8 @@ dataset.pop('Solar Radiation')
 dataset.pop('Rainfall')
 dataset.pop('Snowfall')
 
-#只取Rented Bike Count 不等於0的有效資料
+
+#只取Rented Bike Count 有效資料(大於0的)
 dataset= dataset[dataset['Rented Bike Count']>0]
 
 
