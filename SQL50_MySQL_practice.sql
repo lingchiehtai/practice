@@ -84,3 +84,14 @@ on p.product_id=u.product_id and (u.purchase_date between p.start_date and p.end
 group by p.product_id
 
 
+#1075. Project Employees I
+select project_id, round(avg(experience_years),2) as average_years
+from Project P left join Employee E
+on P.employee_id=E.employee_id
+group by project_id
+
+#1633. Percentage of Users Attended a Contest
+select contest_id, round(100*count(contest_id)/(select count(user_id) from Users),2) as percentage
+from Register 
+group by contest_id
+order by percentage DESC, contest_id
