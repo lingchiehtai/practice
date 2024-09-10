@@ -49,8 +49,7 @@ dataset.pop('Snowfall')
 dataset= dataset[dataset['Rented Bike Count']>0]
 
 
-"""拆開分為training and testing dataset
-"""
+"""拆開分為training and testing dataset"""
 train_dataset = dataset.sample(frac=0.85, random_state=1)
 test_dataset = dataset.drop(train_dataset.index)
 
