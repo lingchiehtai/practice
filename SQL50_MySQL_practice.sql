@@ -95,3 +95,8 @@ select contest_id, round(100*count(contest_id)/(select count(user_id) from Users
 from Register 
 group by contest_id
 order by percentage DESC, contest_id
+
+#2356. Number of Unique Subjects Taught by Each Teacher
+select teacher_id, count(distinct subject_id) as cnt 
+from Teacher 
+group by teacher_id
