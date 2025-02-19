@@ -20,27 +20,27 @@
 #讀取csv檔，匯入database中的table
 
 
-#每一位員工的6月餐費
+#統計:每一位員工的6月餐費
     SELECT EmployeeID, sum(Price) as Price_thisMonth
     FROM TodayOrder
     WHERE Month(OrderDate)=6
     GROUP BY EmployeeID;
 
-#每一位員工的6月餐費;合併另一個table的information
+#統計:每一位員工的6月餐費;合併另一個table的information
     SELECT TA.EmployeeID, Name, Department, sum(Price) as MonthlyPrice
     FROM TodayOrder TA LEFT JOIN EmployeeList TB
     ON TA.EmployeeID=TB.EmployeeID
     WHERE Month(OrderDate)=6 
     GROUP BY TA.EmployeeID, Name, Department;
 	
-#受歡迎的餐點排行
+#統計:受歡迎的餐點排行
     SELECT Item, Restaurant, COUNT(Item)
     FROM TodayOrder
     GROUP BY Restaurant, Item
     ORDER BY COUNT(Item) DESC;
 	
 	
-#受歡迎的餐聽排行
+#統計:受歡迎的餐聽排行
     SELECT Restaurant, COUNT(Restaurant)
     FROM TodayOrder
     GROUP BY Restaurant
