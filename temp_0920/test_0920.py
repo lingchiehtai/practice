@@ -6,6 +6,7 @@ Created on Fri Sep 20 08:49:54 2024
 
 data from https://github.com/allisonhorst/palmerpenguins
 分析企鵝數據集 (penguins.csv)，並使用 Seaborn 和 Matplotlib 進行可視化。
+此程式讀取csv檔案，處理缺失值，將類別資料轉換為數值，並繪製資料的關係圖，畫出不同 species 在喙部長度與深度上的分佈 
 """
 
 
@@ -19,7 +20,7 @@ with open('penguins.csv', 'r', newline='') as csvfile:
     rows = list(csv.reader(csvfile)) 
     
 #data=pd.DataFrame(rows)
-data=pd.DataFrame(rows[1:], columns=rows[0])
+data=pd.DataFrame(rows[1:], columns=rows[0]) #第一列作為欄位名稱
 
 #替换字符串"NA" 為 NaN
 data.replace("NA", np.nan, inplace=True)
@@ -36,7 +37,7 @@ for i, category in enumerate(data['sex'].unique()):
 rawdata = data.copy()
 data = data.dropna()
 
-# 將類別名稱map to 數字
+# 將類別名稱map to 數值
 species_mapping = {'Adelie': 0, 'Gentoo': 1, 'Chinstrap': 2}
 data['species'] = data['species'].map(species_mapping)
 print(data[['species']].tail())
@@ -54,6 +55,7 @@ cols_to_convert = ['bill_length_mm', 'bill_depth_mm', 'flipper_length_mm', 'body
 data[cols_to_convert] = data[cols_to_convert].apply(pd.to_numeric, errors='coerce')
 
 
+#視覺化
 #plot 畫出不同參數之間的關係，分別用species, island, sex 標出不同顏色
 sns.pairplot(data[:], diag_kind='kde')
 
