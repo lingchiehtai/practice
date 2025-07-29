@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ post.title }}</title>
+</head>
+<body>
+    <h1><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h1>
+    
+    <p>更新於：{{ post.updated_at|date:"Y-m-d H:i" }}</p>
+	
+	{% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width:100%;">
+    {% endif %}
+	
+    <div>{{ post.content|safe}}</div>
+    <p><a href="{% url 'post_list' %}">← 回到文章列表</a></p>
+</body>
+</html>
