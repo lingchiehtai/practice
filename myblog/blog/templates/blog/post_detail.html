@@ -2,6 +2,14 @@
 <html>
 <head>
     <title>{{ post.title }}</title>
+	<style>
+        .blog-content img {
+            display: block;
+            margin: 1em auto;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <h1><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h1>
@@ -12,7 +20,9 @@
         <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width:100%;">
     {% endif %}
 	
-    <div>{{ post.content|safe}}</div>
+    <div class="blog-content">
+		{{ post.content|safe }}
+	</div>
     <p><a href="{% url 'post_list' %}">← 回到文章列表</a></p>
 </body>
 </html>

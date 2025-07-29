@@ -1,7 +1,7 @@
 # blog/forms.py
 from django import forms
 from .models import Post
-from ckeditor.fields import RichTextField
+#from ckeditor.fields import RichTextField
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 

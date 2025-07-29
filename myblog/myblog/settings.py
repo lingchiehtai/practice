@@ -138,10 +138,12 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
+
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
         'height': 300,
         'width': '100%',
+        'extraPlugins': ','.join(['image2']),  # 支援圖片拖拉
     },
 }
