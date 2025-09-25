@@ -38,12 +38,12 @@ with open(picFilename, "wb") as f:
     
 #===============================
 #使用 requests 模組下載cwa網頁中的 颱風警報路徑圖
-timeTW = datetime.datetime.now()
+# timeTW = datetime.datetime.now()
 
-picURL = "https://www.cwa.gov.tw/Data/typhoon/TY_WARN/B20.png"
-picFile = requests.get(picURL, allow_redirects=True)
-picFilename='pic_颱風警報_' + timeTW.strftime("%Y%m%d_%H%M") +'.png'
-print(picFilename)
-with open(picFilename, "wb") as f: 
-    f.write(picFile.content)
+# picURL = "https://www.cwa.gov.tw/Data/typhoon/TY_WARN/B20.png"
+# picFile = requests.get(picURL, allow_redirects=True)
+# picFilename='pic_颱風警報_' + timeTW.strftime("%Y%m%d_%H%M") +'.png'
+# print(picFilename)
+# with open(picFilename, "wb") as f: 
+    # f.write(picFile.content)
 

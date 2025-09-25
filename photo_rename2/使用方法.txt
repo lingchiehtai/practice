@@ -10,6 +10,18 @@ gemini-2.5-pro
 gemini-2.5-flash
 gemini-2.5-flash-lite 
 
+===
+  這個腳本的核心功能是自動為照片檔名加上描述性的關鍵字。它會分析圖片內容以及您在 mynote.txt
+  中寫的每日筆記，然後透過 Google Gemini AI 模型生成最貼切的關鍵字，最後將這些關鍵字附加到原始檔名後面。
+
+  主要流程：
+
+
+   1. 設定與初始化 (Configuration & `main` function)
+   2. 解析筆記 (`parse_notes` function)
+   3. 尋找待處理檔案 (`get_files_to_rename` function)
+   4. 生成新檔名 (`generate_new_filename` function)
+   5. 執行重新命名 (`main` function)
 
 ====
 
