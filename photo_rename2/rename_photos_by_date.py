@@ -18,11 +18,19 @@ def get_exif_date(filepath):
         cmd = ["exiftool", "-s3", "-DateTimeOriginal", filepath]
         result = subprocess.run(cmd, capture_output=True, text=True, check=True)
         date_str = result.stdout.strip()
-        # 解析時間戳以應對不同格式，並確保排序正確
-        return datetime.strptime(date_str, '%Y:%m:%d %H:%M:%S')
+        if date_str:
+            # 解析時間戳以應對不同格式，並確保排序正確
+            return datetime.strptime(date_str, '%Y:%m:%d %H:%M:%S')
+        else:
+            print(f"檔案 {filepath}: 未找到 EXIF 拍攝時間，將使用檔案修改時間作為替代。")
+            return datetime.fromtimestamp(os.path.getmtime(filepath))
     except (subprocess.CalledProcessError, FileNotFoundError, ValueError) as e:
-        print(f"無法處理檔案 {filepath}: {e}")
-        return None
+        print(f"無法處理檔案 {filepath}: {e}。將嘗試使用檔案修改時間作為替代。")
+        try:
+            return datetime.fromtimestamp(os.path.getmtime(filepath))
+        except OSError as oe:
+            print(f"無法獲取檔案 {filepath} 的修改時間: {oe}")
+            return None
 
 def rename_photos_by_date():
     """根據拍攝日期重新命名目前目錄中的照片"""
