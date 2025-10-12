@@ -25,8 +25,9 @@ PHOTO_DIRECTORY = Path('.')
 NOTES_FILE = 'mynote.txt'
 
 # 4. Gemini model configuration
-#MODEL_NAME = "gemini-2.5-pro"
-MODEL_NAME = "gemini-2.5-flash"
+#MODEL_NAME = "gemini-2.5-pro"  #每日要求數(RPD)=100
+MODEL_NAME = "gemini-2.5-flash"  # 每日要求數(RPD)=250
+
 GENERATION_CONFIG = {
     "temperature": 0.2,
     "top_p": 0.95,
@@ -130,15 +131,39 @@ def generate_new_filename(model, image_path, notes_for_date):
             else:
                 print(f"  - Warning: AI returned an invalid format: '{new_name}'. Skipping.")
                 return None
+        # except Exception as e:
+            # print(f"  - Error calling Gemini API: {e}")
+            # if "503" in str(e) and i < max_retries - 1:
+                # wait_time = 2 ** i
+                # print(f"  - Received 503 error. Retrying in {wait_time} seconds...")
+                # time.sleep(wait_time)
+            # else:
+                # print("  - Max retries reached or non-retryable error. Skipping file.")
+                # return None
+                
+        # 這是 generate_new_filename 函式內的 except 區塊
         except Exception as e:
-            print(f"  - Error calling Gemini API: {e}")
-            if "503" in str(e) and i < max_retries - 1:
+            error_msg = str(e)
+            print(f"  - Error calling Gemini API: {error_msg}")
+
+            # 🚨 1. 優先處理 429 錯誤，並強制停止腳本
+            if "429" in error_msg or "Quota exceeded" in error_msg:
+                print("\n🚨 嚴重警告: 已達每日配額上限。腳本將強制終止。")
+                raise  # <--- 確保這行被執行，它會結束整個 main process
+
+            # 2. 處理 503 錯誤
+            elif "503" in error_msg and i < max_retries - 1:
                 wait_time = 2 ** i
-                print(f"  - Received 503 error. Retrying in {wait_time} seconds...")
+                print(f"  - Received 503 error. Retrying in {wait_time} seconds...")
                 time.sleep(wait_time)
+
+            # 3. 處理其他錯誤，並跳過當前檔案
             else:
-                print("  - Max retries reached or non-retryable error. Skipping file.")
-                return None
+                # 如果 429 和 503 都沒有匹配，則執行這裡
+                print("  - Max retries reached or non-retryable error. Skipping file.")
+                return None                
+
+
     return None
 
 def main():
