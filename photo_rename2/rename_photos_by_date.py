@@ -9,6 +9,7 @@
 import os
 import subprocess
 import collections
+import re
 from datetime import datetime
 
 def get_exif_date(filepath):
@@ -59,6 +60,12 @@ def rename_photos_by_date():
             _, extension = os.path.splitext(old_filename)
             new_filename = f"{date_str}_{index:03d}{extension}"
             
+            # 若檔案已是 yyyy-mm-dd_NNN 或 yyyy-mm-dd_NNN_xxx 形式，避免覆寫關鍵字 → 直接跳過
+            existing_pattern = re.compile(rf'^{re.escape(date_str)}_\d{{3}}(?:_.+)?{re.escape(extension)}$', re.IGNORECASE)
+            if existing_pattern.match(old_filename):
+                print(f"檔案 '{old_filename}' 已含日期與編號，保留既有關鍵字，跳過。")
+                continue
+
             if old_filename == new_filename:
                 print(f"檔案 '{old_filename}' 已是正確格式，跳過。")
                 continue
