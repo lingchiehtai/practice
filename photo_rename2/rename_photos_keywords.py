@@ -5,12 +5,13 @@
 #   - 根據照片的辨識內容和對應日期的筆記，透過 Gemini AI 產生描述性的關鍵字。
 #   - 將這些關鍵字附加到檔案名稱中，使檔案更具意義和可搜尋性。
 #   - 流程包含：解析筆記、找出需要重新命名的檔案，以及呼叫 AI 來生成新檔名。
-
+#   - 10/15 API 呼叫已改為 client.files.upload 和 client.models.generate_content
 
 import os
 import re
 import time
-import google.generativeai as genai
+#import google.generativeai as genai
+from google import genai 
 from pathlib import Path
 
 # --- Configuration ---
@@ -86,7 +87,7 @@ def get_files_to_rename(directory):
             
     return sorted(unnamed_files)
 
-def generate_new_filename(model, image_path, notes_for_date):
+def generate_new_filename(client, image_path, notes_for_date):
     """
     Uses the Gemini API to generate a new filename based on the image and notes.
     Includes retry logic for API errors.
@@ -117,12 +118,22 @@ def generate_new_filename(model, image_path, notes_for_date):
     Now, generate the new filename for the image provided.
     """
     
-    image_file = genai.upload_file(path=str(image_path))
+    #image_file = genai.upload_file(path=str(image_path))
+    image_file = client.files.upload(file=str(image_path))
+
     
     max_retries = 10
     for i in range(max_retries):
         try:
-            response = model.generate_content([prompt, image_file])
+            #response = model.generate_content([prompt, image_file])
+            #response = client.models.generate_content([prompt, image_file])
+            response = client.models.generate_content(
+                model=MODEL_NAME,  # 這裡需要傳入模型名稱的字串（例如 'gemini-2.5-flash'）
+                contents=[prompt, image_file],
+                # ... 其他參數 ...
+            )
+            
+            
             # Clean up the response to ensure it's a valid filename
             new_name = response.text.strip().replace('\n', '')
             # Basic validation
@@ -146,9 +157,9 @@ def generate_new_filename(model, image_path, notes_for_date):
             error_msg = str(e)
             print(f"  - Error calling Gemini API: {error_msg}")
 
-            # 🚨 1. 優先處理 429 錯誤，並強制停止腳本
+            # 1. 優先處理 429 錯誤，並強制停止腳本
             if "429" in error_msg or "Quota exceeded" in error_msg:
-                print("\n🚨 嚴重警告: 已達每日配額上限。腳本將強制終止。")
+                print("\n🚨 STOP: 已達每日配額上限。腳本將強制停止。")
                 raise  # <--- 確保這行被執行，它會結束整個 main process
 
             # 2. 處理 503 錯誤
@@ -162,7 +173,9 @@ def generate_new_filename(model, image_path, notes_for_date):
                 # 如果 429 和 503 都沒有匹配，則執行這裡
                 print("  - Max retries reached or non-retryable error. Skipping file.")
                 return None                
-
+       
+    # 記得刪除檔案
+    client.files.delete(name=image_file.name)
 
     return None
 
@@ -175,12 +188,20 @@ def main():
         print("Please set your API key and run the script again.")
         return
 
-    genai.configure(api_key=API_KEY)
-    model = genai.GenerativeModel(
-        MODEL_NAME,
-        safety_settings=SAFETY_SETTINGS,
-        generation_config=GENERATION_CONFIG,
-    )
+    # genai.configure(api_key=API_KEY)
+    # model = genai.GenerativeModel(
+        # MODEL_NAME,
+        # safety_settings=SAFETY_SETTINGS,
+        # generation_config=GENERATION_CONFIG,
+    # )
+    
+    print("正在初始化 Gemini Client...")
+    # 步驟 1: 建立 Client 物件，金鑰在此傳入
+    client = genai.Client(api_key=API_KEY)
+    # 步驟 2: 不需要額外建立 Model 物件，直接使用 Client 來呼叫服務
+    # 初始化新版 Client
+
+
 
     print("Starting photo renaming process...")
     
@@ -210,7 +231,9 @@ def main():
             
         notes_for_date = notes_by_date.get(notes_key, "")
         
-        new_filename = generate_new_filename(model, file_path, notes_for_date)
+        #new_filename = generate_new_filename(model, file_path, notes_for_date)
+        new_filename = generate_new_filename(client, file_path, notes_for_date)
+
         
         if new_filename:
             try:
