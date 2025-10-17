@@ -102,13 +102,14 @@ def generate_new_filename(client, image_path, notes_for_date):
     **Instructions:**
     1.  The new filename MUST start with the exact original name: `{original_stem}`.
     2.  Append descriptive keywords based on the image content and notes. Separate keywords with underscores (`_`).
-    3.  Do NOT change the original file extension (`{original_suffix}`).
-    4.  If the notes do not seem to match the image, rely only on the visual content of the image for keywords.
-    5.  Your response must be ONLY the new filename and nothing else.
-
+    3.  Do NOT include keywords such as: 人像, 人物, 景觀, 女子, 男子, 女性, 男性, 合照, 多人合照.
+    4.  Do NOT change the original file extension (`{original_suffix}`).
+    5.  If the notes do not seem to match the image, rely only on the visual content of the image for keywords.
+    6.  Your response must be ONLY the new filename and nothing else.
+    
     **Example:**
-    If the original name is `2025-09-10_052` and the image shows pants hangers from Nitori, a good response would be:
-    `2025-09-10_052_宜得利_褲用衣架.jpg`
+    If the original name is 2025-09-10_052 and the image shows a magnetic paper towel holder from Nitori, 
+    a good response would be: 2025-09-10_052_宜得利_磁吸紙巾收納架.jpg
 
     **Context from notes for this day:**
     ---
