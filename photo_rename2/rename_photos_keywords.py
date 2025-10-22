@@ -8,15 +8,14 @@
 #   - 10/15 API 呼叫已改為 client.files.upload 和 client.models.generate_content
 
 import os
+from pathlib import Path
 import re
 import time
-#import google.generativeai as genai
-from google import genai 
-from pathlib import Path
+from google import genai  #Google Gemini SDK
+
 
 # --- Configuration ---
 # 1. Set your API Key as an environment variable named GOOGLE_API_KEY
-#    For example, in your terminal: export GOOGLE_API_KEY="YOUR_API_KEY"
 API_KEY = os.getenv('GOOGLE_API_KEY')
 
 # 2. Define the directory where your photos are located.
@@ -29,21 +28,10 @@ NOTES_FILE = 'mynote.txt'
 #MODEL_NAME = "gemini-2.5-pro"  #每日要求數(RPD)=100
 MODEL_NAME = "gemini-2.5-flash"  # 每日要求數(RPD)=250
 
-GENERATION_CONFIG = {
-    "temperature": 0.2,
-    "top_p": 0.95,
-    "top_k": 64,
-    "max_output_tokens": 8192,
-    "response_mime_type": "text/plain",
-}
-SAFETY_SETTINGS = [
-    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-]
 # --- End of Configuration ---
 
+
+#解析筆記檔案
 def parse_notes(file_path):
     """
     尋找所有格式為 月/日 的日期，並將日期後面的文字視為當天的筆記內容。
@@ -70,6 +58,8 @@ def parse_notes(file_path):
         
     return notes
 
+
+#篩選未命名檔案
 def get_files_to_rename(directory):
     """
     找出尚未被重新命名的圖片檔
@@ -87,6 +77,8 @@ def get_files_to_rename(directory):
             
     return sorted(unnamed_files)
 
+
+#呼叫 AI 生成新檔名 (上傳圖片和文字筆記到 Gemini API)
 def generate_new_filename(client, image_path, notes_for_date):
     """
     Uses the Gemini API to generate a new filename based on the image and notes.
@@ -119,18 +111,16 @@ def generate_new_filename(client, image_path, notes_for_date):
     Now, generate the new filename for the image provided.
     """
     
-    #image_file = genai.upload_file(path=str(image_path))
     image_file = client.files.upload(file=str(image_path))
 
     
     max_retries = 10
     for i in range(max_retries):
         try:
-            #response = model.generate_content([prompt, image_file])
-            #response = client.models.generate_content([prompt, image_file])
+
             response = client.models.generate_content(
-                model=MODEL_NAME,  # 這裡需要傳入模型名稱的字串（例如 'gemini-2.5-flash'）
-                contents=[prompt, image_file],
+                model = MODEL_NAME,  # 這裡需要傳入模型名稱的字串（例如 'gemini-2.5-flash'）
+                contents = [prompt, image_file],
                 # ... 其他參數 ...
             )
             
@@ -143,42 +133,33 @@ def generate_new_filename(client, image_path, notes_for_date):
             else:
                 print(f"  - Warning: AI returned an invalid format: '{new_name}'. Skipping.")
                 return None
-        # except Exception as e:
-            # print(f"  - Error calling Gemini API: {e}")
-            # if "503" in str(e) and i < max_retries - 1:
-                # wait_time = 2 ** i
-                # print(f"  - Received 503 error. Retrying in {wait_time} seconds...")
-                # time.sleep(wait_time)
-            # else:
-                # print("  - Max retries reached or non-retryable error. Skipping file.")
-                # return None
                 
         # 這是 generate_new_filename 函式內的 except 區塊
         except Exception as e:
             error_msg = str(e)
             print(f"  - Error calling Gemini API: {error_msg}")
 
-            # 1. 優先處理 429 錯誤，並強制停止腳本
+            # 1. 優先處理 429 錯誤，並強制停止腳本 (配額超限)
             if "429" in error_msg or "Quota exceeded" in error_msg:
                 print("\n🚨 STOP: 已達每日配額上限。腳本將強制停止。")
                 raise  # <--- 確保這行被執行，它會結束整個 main process
 
-            # 2. 處理 503 錯誤
+            # 2. 處理 503 錯誤 (服務暫時不可用)
             elif "503" in error_msg and i < max_retries - 1:
                 wait_time = 2 ** i
                 print(f"  - Received 503 error. Retrying in {wait_time} seconds...")
                 time.sleep(wait_time)
 
-            # 3. 處理其他錯誤，並跳過當前檔案
+            # 3. 其他錯誤: 達到最大重試次數或遇到其他錯誤時，跳過當前檔案。
             else:
-                # 如果 429 和 503 都沒有匹配，則執行這裡
                 print("  - Max retries reached or non-retryable error. Skipping file.")
                 return None                
        
-    # 記得刪除檔案
+    # 記得刪除檔案 (清理上傳到伺服器上的檔案)
     client.files.delete(name=image_file.name)
 
     return None
+
 
 def main():
     """
@@ -189,16 +170,11 @@ def main():
         print("Please set your API key and run the script again.")
         return
 
-    # genai.configure(api_key=API_KEY)
-    # model = genai.GenerativeModel(
-        # MODEL_NAME,
-        # safety_settings=SAFETY_SETTINGS,
-        # generation_config=GENERATION_CONFIG,
-    # )
     
     print("正在初始化 Gemini Client...")
     # 步驟 1: 建立 Client 物件，金鑰在此傳入
     client = genai.Client(api_key=API_KEY)
+    
     # 步驟 2: 不需要額外建立 Model 物件，直接使用 Client 來呼叫服務
     # 初始化新版 Client
 
@@ -220,7 +196,7 @@ def main():
     for file_path in files_to_process:
         print(f"\nProcessing '{file_path.name}'...")
         
-        # Extract date from filename (e.g., '2025-09-12' -> '9/12')
+        # 提取日期 Extract date from filename (e.g., '2025-09-12' -> '9/12')
         try:
             date_parts = file_path.stem.split('_')[0].split('-')
             month = int(date_parts[1])
@@ -230,9 +206,10 @@ def main():
             print(f"  - Could not parse date from filename. Skipping.")
             continue
             
+        #根據提取的 月/日 從筆記字典中找到對應的筆記內容。
         notes_for_date = notes_by_date.get(notes_key, "")
         
-        #new_filename = generate_new_filename(model, file_path, notes_for_date)
+        #生成新檔名
         new_filename = generate_new_filename(client, file_path, notes_for_date)
 
         
@@ -245,6 +222,7 @@ def main():
                 
                 file_path.rename(new_path)
                 print(f"  - Renamed to: '{new_filename}'")
+                
             except OSError as e:
                 print(f"  - Error renaming file: {e}")
 
