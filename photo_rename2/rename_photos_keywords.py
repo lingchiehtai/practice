@@ -5,7 +5,7 @@
 #   - 根據照片的辨識內容和對應日期的筆記，透過 Gemini AI 產生描述性的關鍵字。
 #   - 將這些關鍵字附加到檔案名稱中，使檔案更具意義和可搜尋性。
 #   - 流程包含：解析筆記、找出需要重新命名的檔案，以及呼叫 AI 來生成新檔名。
-#   - 10/15 API 呼叫已改為 client.files.upload 和 client.models.generate_content
+#   - 10/15 API 呼叫已改為 client.files.upload(上傳檔案) 和 client.models.generate_content(生成內容)
 
 import os
 from pathlib import Path
