@@ -94,7 +94,7 @@ def generate_new_filename(client, image_path, notes_for_date):
     **Instructions:**
     1.  The new filename MUST start with the exact original name: `{original_stem}`.
     2.  Append descriptive keywords based on the image content and notes. Separate keywords with underscores (`_`).
-    3.  Do NOT include keywords such as: 人像, 人物, 景觀, 女子, 男子, 女性, 男性, 合照, 多人合照.
+    3.  Do NOT include keywords such as: 人像, 人物, 景觀, 女子, 男子, 女性, 男性, 合照, 多人合照, 比讚, 比YA, 微笑, 笑臉.
     4.  Do NOT change the original file extension (`{original_suffix}`).
     5.  If the notes do not seem to match the image, rely only on the visual content of the image for keywords.
     6.  Your response must be ONLY the new filename and nothing else.
