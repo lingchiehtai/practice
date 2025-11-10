@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed May 15 12:41:12 2024
 @author: Linda
-seoul_bike_sharing_demand
+   
+1. 準備資料：載入並清理首爾自行車租借資料，再將其分為訓練集與測試集。   
+2. 訓練模型：使用TensorFlow/Keras 建立一個深度神經網路(DNN)迴歸模型來預測自行車的租借數量。
+3. 評估與與視覺化：評估模型準確度、將結果視覺化成圖表，並儲存訓練好的模型。
 """
 
 import tensorflow as tf
@@ -12,6 +14,7 @@ import numpy as np
 import seaborn as sns  
 
 #dataset #https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand
+#Import the dataset 
 from ucimlrepo import fetch_ucirepo   
   
 # fetch dataset 
@@ -28,7 +31,7 @@ rawdata = dataset.copy()
 dataset.tail()
 dataset.isna().sum()  #統計 np.nan 數量
 
-""" 畫出不同参数之間的關係 """
+"""### 不同参数之間的關係"""
 sns.pairplot(dataset[['Rented Bike Count', 'Hour', 'Temperature','Humidity','Wind speed','Visibility']], diag_kind='kde')
 
 
@@ -44,8 +47,7 @@ dataset.pop('Solar Radiation')
 dataset.pop('Rainfall')
 dataset.pop('Snowfall')
 
-
-#只取Rented Bike Count 有效資料(大於0的)
+#只取Rented Bike Count 不等於0的有效資料
 dataset= dataset[dataset['Rented Bike Count']>0]
 
 
@@ -69,7 +71,7 @@ test_labels = test_features.pop('Rented Bike Count')
 
 
 
-"""使用DNN和多個變數進行回歸: """
+"""使用DNN和多個變數進行regression """
 normalizer = tf.keras.layers.Normalization(axis=-1)
 normalizer.adapt(np.array(train_features))
 
@@ -80,18 +82,19 @@ dnn_model = tf.keras.Sequential([
     tf.keras.layers.Dense(64, activation='relu'),
     tf.keras.layers.Dense(128, activation='relu'),
     tf.keras.layers.Dense(256, activation='relu'),
-    tf.keras.layers.Dense(1)
+    tf.keras.layers.Dense(1)  #output layer
 ])
 
 
-dnn_model.summary()
+#dnn_model.summary()
 
+"配置神經網路模型"
 dnn_model.compile(
     optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
     loss='mean_absolute_error'
     )
 
-
+"對模型進行訓練"
 history = dnn_model.fit(
         train_features,
         train_labels,
@@ -126,7 +129,7 @@ plot_loss(history)
 
 #畫圖 測試集的預測結果 vs. 實際值 
 x = tf.linspace(0.0, 3000, 3001)
-y =1.* x
+y = 1.* x
 
 test_prediction = dnn_model.predict(test_features).flatten() #1D-data
 

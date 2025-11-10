@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu May  2 10:51:19 2024
+
 @author: Linda
-image classification by using tensorflow 
+classification for Rock-Paper-Scissors Images dataset 
+   1. 資料載入：讀取圖片資料集，將資料轉換為模型可用的格式，以供訓練與驗證。
+
+   2. 訓練模型：使用 TensorFlow/Keras 建立一個卷積神經網路(CNN)模型，進行訓練，使其能夠辨識圖片中的三種手勢。
+
+   3. 評估與預測：訓練完成後，將準確率 (Accuracy) 與損失 (Loss)
+      的變化過程繪製成圖表。最後，載入訓練好的模型來預測新圖片的類別。
 """
 
 
@@ -39,7 +46,7 @@ for subfolder in os.listdir(dataset_path):
 df = pd.DataFrame({'image': images, 'label': labels})
 
 #============================================
-#顯示圖片
+#顯示圖片 每個分類顯示前4張
 from matplotlib.gridspec import GridSpec
 
 # Create figure and grid of subplots
@@ -62,7 +69,7 @@ print(len(os.listdir('./rps-cv-images/paper')))
 print(len(os.listdir('./rps-cv-images/rock')))
 print(len(os.listdir('./rps-cv-images/scissors')))
 
-#create dir
+"create dir"
 # try:
 #     os.mkdir('./tmp/paper-rock-scissors')
 #     os.mkdir('./tmp/paper-rock-scissors/training')
@@ -78,7 +85,7 @@ print(len(os.listdir('./rps-cv-images/scissors')))
 #     pass
 
 #============================================
-#原始圖片依照比例複製到training/testing 資料夾
+"原始圖片依照比例複製到training/testing 資料夾"
 # def split_data(SOURCE, TRAINING, TESTING, SPLIT_SIZE):
 #     files = []
 #     for filename in os.listdir(SOURCE):
@@ -231,7 +238,7 @@ reload_model = tf.keras.models.load_model(keras_model_name)
 
 reload_model.summary()
 
-reload_model.evaluate(validation_generator)
+#reload_model.evaluate(validation_generator)
 
 #------------------------------------------------
 #讀取資料夾裡面的圖檔:predict
