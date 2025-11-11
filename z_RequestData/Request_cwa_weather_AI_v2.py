@@ -9,12 +9,6 @@ from io import BytesIO
 
 MODEL_NAME = "gemini-2.5-flash" 
 
-import os
-import re
-import requests
-import google.generativeai as genai
-from PIL import Image
-from io import BytesIO
 
 # --- 1. 設定圖片來源 URL ---
 pic_url = "https://www.cwa.gov.tw/Data/typhoon/TY_WARN/B20.png"
