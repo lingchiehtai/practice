@@ -274,14 +274,17 @@
                 ${statusBadge}
               </div>
               
-              <h3 class="font-bold text-gray-800 text-base leading-tight line-clamp-2 mb-1">${item.name}</h3>
+              <!-- Name: 從 text-lg 增加到 text-xl -->
+              <h3 class="font-bold text-gray-800 text-xl leading-tight line-clamp-2 mb-1">${item.name}</h3>
               
               <div class="space-y-0.5">
-                <p class="text-xs text-gray-600 line-clamp-1 flex items-center gap-1.5">
+                <!-- Detail 1: 從 text-sm 增加到 text-base -->
+                <p class="text-base text-gray-600 line-clamp-1 flex items-center gap-1.5">
                   <i class="fa-solid fa-circle-info text-blue-500 text-[10px] w-3 text-center"></i>
                   <span class="truncate">${item.detail1 || '-'}</span>
                 </p>
-                <p class="text-xs text-gray-500 line-clamp-1 flex items-center gap-1.5">
+                <!-- Detail 2: 從 text-sm 增加到 text-base -->
+                <p class="text-base text-gray-500 line-clamp-1 flex items-center gap-1.5">
                   <i class="fa-regular fa-comment-dots text-gray-500 text-[10px] w-3 text-center"></i>
                   <span class="truncate">${item.detail2 || '-'}</span>
                 </p>
