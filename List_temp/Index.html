@@ -27,7 +27,7 @@
       }
       @keyframes spin {
         0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        100% { transform: transform: rotate(360deg); }
       }
       
       /* 隱藏 select 預設箭頭 (為了自定義) */
@@ -253,7 +253,7 @@
         
         // 圖片佔位圖背景和邊框也改為中性色
         const imagePlaceholder = `
-          <!-- 將寬度從 w-28 (112px) 增加並固定為 w-32 (128px) -->
+          <!-- 圖片區：固定寬度 w-32，並使用 border-l (左側邊界) 與文字區隔 -->
           <div class="w-32 flex items-center justify-center flex-shrink-0 border-l border-gray-200 bg-gray-100">
              <img src="${imageUrl}" 
                   <!-- 佔位圖尺寸也調整為 128x110 以匹配容器寬度 -->
@@ -264,7 +264,7 @@
         `;
 
         div.innerHTML = `
-          <!-- 左側文字區 -->
+          <!-- 左側文字區 - 調整到左邊 (先放) -->
           <div class="flex-1 p-3 flex flex-col justify-between">
             <div>
               <div class="flex justify-between items-start mb-1">
@@ -298,7 +298,7 @@
             </div>
           </div>
           
-          <!-- 右側圖片區 (固定寬度 w-32) -->
+          <!-- 右側圖片區 (固定寬度 w-32) - 調整到右邊 (後放) -->
           ${imagePlaceholder}
         `;
         
