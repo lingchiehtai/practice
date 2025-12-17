@@ -38,7 +38,8 @@
       }
     </style>
   </head>
-  <body class="bg-gray-50 min-h-screen text-gray-800">
+  <!-- 網頁背景改為 #e8f0fe -->
+  <body class="bg-[#e8f0fe] min-h-screen text-gray-800">
 
     <div class="max-w-md mx-auto bg-white min-h-screen shadow-lg flex flex-col relative">
       
@@ -89,7 +90,8 @@
       </header>
 
       <!-- 2. 內容列表區域 -->
-      <main id="card-container" class="flex-1 p-3 space-y-3 bg-gray-50">
+      <!-- 主要內容區塊背景改為 #e8f0fe -->
+      <main id="card-container" class="flex-1 p-3 space-y-3 bg-[#e8f0fe]">
         <!-- 載入中狀態 -->
         <div id="loading" class="flex flex-col items-center justify-center py-10">
           <div class="loader mb-3"></div>
@@ -229,8 +231,8 @@
       // 建立單張卡片 HTML
       function createCard(item) {
         const div = document.createElement('div');
-        // 1. 卡片底色改為 #e8f0fe
-        div.className = 'bg-[#e8f0fe] rounded-lg shadow-sm border border-blue-200 overflow-hidden hover:shadow-md transition-shadow duration-200 flex min-h-[110px] relative';
+        // 卡片底色改為白色，邊框改為中性的 gray-200
+        div.className = 'bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200 flex min-h-[110px] relative';
         
         // 狀態標籤
         let statusBadge = '';
@@ -249,8 +251,9 @@
         // 圖片處理: 使用 imageUrl 欄位，並加上錯誤處理和佔位圖
         const imageUrl = item.imageUrl;
         
+        // 圖片佔位圖背景和邊框也改為中性色
         const imagePlaceholder = `
-          <div class="w-28 flex items-center justify-center flex-shrink-0 border-l border-blue-200 bg-blue-100">
+          <div class="w-28 flex items-center justify-center flex-shrink-0 border-l border-gray-200 bg-gray-100">
              <img src="${imageUrl}" 
                   onerror="this.onerror=null;this.src='https://placehold.co/112x110/f1f5f9/94a3b8?text=No+Image';"
                   class="w-full h-full object-cover rounded-tr-lg rounded-br-lg"
