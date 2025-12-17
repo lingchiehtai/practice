@@ -253,19 +253,21 @@
         
         // 圖片佔位圖背景和邊框也改為中性色
         const imagePlaceholder = `
-          <!-- 圖片區：固定寬度 w-32，並使用 border-l (左側邊界) 與文字區隔 -->
-          <div class="w-32 flex items-center justify-center flex-shrink-0 border-l border-gray-200 bg-gray-100">
-             <img src="${imageUrl}" 
-                  <!-- 佔位圖尺寸也調整為 128x110 以匹配容器寬度 -->
-                  onerror="this.onerror=null;this.src='https://placehold.co/128x110/f1f5f9/94a3b8?text=No+Image';"
-                  class="w-full h-full object-cover rounded-tr-lg rounded-br-lg"
-                  alt="${item.name}圖片"/>
-          </div>
+        <!-- 右側圖片區：固定寬度、不被擠壓、有背景、有分隔線，確保 Flex 版型穩定 -->
+		<div class="w-32 flex-shrink-0 bg-gray-100 border-l border-gray-200">
+		  <img
+			src="${imageUrl}"
+			onerror="this.onerror=null;this.src='https://placehold.co/128x110/f1f5f9/94a3b8?text=No+Image';"
+			class="w-full h-full object-cover rounded-tr-lg rounded-br-lg"
+			alt="${item.name}圖片"
+		  />
+		</div>
+
         `;
 
         div.innerHTML = `
-          <!-- 左側文字區 - 調整到左邊 (先放) -->
-          <div class="flex-1 p-3 flex flex-col justify-between">
+          <!-- 左側文字區 (Text | Image 佈局) - 加上 min-w-0 修正 Flex 溢出導致重疊的問題 -->
+          <div class="flex-1 min-w-0 p-3 flex flex-col justify-between">
             <div>
               <div class="flex justify-between items-start mb-1">
                 <div class="flex items-center gap-1 overflow-hidden">
@@ -298,7 +300,7 @@
             </div>
           </div>
           
-          <!-- 右側圖片區 (固定寬度 w-32) - 調整到右邊 (後放) -->
+          <!-- 右側圖片區 (固定寬度 w-32) - 在文字區塊之後，實現 Text | Image 佈局 -->
           ${imagePlaceholder}
         `;
         
