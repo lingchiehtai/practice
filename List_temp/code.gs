@@ -32,7 +32,8 @@ function getData() {
       detail2: row[4],
       mapLink: row[5], // 原始 MapLink 欄位（可能為空）
       status: row[6],
-      imageUrl: '' // 新增圖片 URL 欄位
+      //imageUrl: row[7]   // H 欄 - 新增圖片 URL 欄位
+      imageUrl: (row[7] && row[7].startsWith('http')) ? row[7] : 'https://via.placeholder.com/150?text=No+Image'  //空白或錯誤訊息，網頁就會顯示一張「No Image」的預設圖
     };
   }).filter(item => item.name !== ""); 
 
@@ -71,6 +72,50 @@ function performDataEnrichment(data) {
   
   return data;
 }
+
+
+// 在試算表上方新增一個自定義選單
+function onOpen() {
+  var ui = SpreadsheetApp.getUi();
+  ui.createMenu('🔍 API 功能')
+      .addItem('先選取的儲存格->抓取圖片網址', 'runImageFetch')
+      .addToUi();
+}
+
+function runImageFetch() {
+  var range = SpreadsheetApp.getActiveRange(); 
+  var values = range.getValues();
+  
+  const API_KEY = "AIzaSyCiiCU98ercH40v-tPt2GdZS1Z3VR4CAlg";
+  const CX = "96026e66c630042f8";
+
+  for (var i = 0; i < values.length; i++) {
+    var keyword = values[i][0];
+    if (keyword) {
+      // 呼叫 API
+      const url = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(keyword)}&searchType=image&num=1`;
+      try {
+        const response = UrlFetchApp.fetch(url);
+        const data = JSON.parse(response.getContentText());
+        if (data.items && data.items.length > 0) {
+          
+        // 關鍵修改點：從 C 欄往右移 5 格到 H 欄
+        // 若選取的是 C 欄，offset(0, 5) 就會填入對應列的 H 欄
+        range.getCell(i + 1, 1).offset(0, 5).setValue(data.items[0].link);
+        } else {
+        range.getCell(i + 1, 1).offset(0, 5).setValue("找不到圖片");
+        }
+        } catch (e) {
+        range.getCell(i + 1, 1).offset(0, 5).setValue("API 錯誤: " + e.toString());
+        }
+        
+        // 建議：如果是大量執行，可以稍微停頓 0.1 秒避免 API 請求過快
+        Utilities.sleep(100);
+        
+    }
+  }
+}
+
 
 /**
  * [選擇性使用] 初次設定用
