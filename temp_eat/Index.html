@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入 Tailwind CSS 進行樣式設計 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 FontAwesome 用於圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+      /* 自定義滾動條 */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #f1f1f1; }
+      ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+      
+      /* 載入動畫 */
+      .loader {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); } /* 去掉重複的 transform: */
+      }
+      
+      /* 隱藏 select 預設箭頭 (為了自定義) */
+      select {
+        -webkit-appearance: none;f
+        -moz-appearance: none;
+        appearance: none;
+      }
+    </style>
+  </head>
+  <!-- 網頁背景改為 #FFF7FB-->
+  <body class="bg-[#FFF7FB] min-h-screen text-gray-800">
+
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-lg flex flex-col relative">
+      
+      <!-- 1. 整合型 Header (標題 + 篩選) -->
+      <!-- 使用 sticky 讓它固定在頂部 -->
+      <header class="bg-[#FF95CA] text-white p-3 sticky top-0 z-20 shadow-md">
+        <div class="flex flex-wrap items-center justify-between gap-y-2 gap-x-2">
+          
+          <!-- 左側標題 -->
+          <h1 class="text-lg font-bold flex items-center gap-2 whitespace-nowrap flex-shrink-0">
+            <i class="fa-solid fa-map-location-dot"></i>
+            <span>景點美食</span>
+          </h1>
+
+          <!-- 右側篩選器 (Flex wrap 確保小螢幕會自動換行，但儘量並排) -->
+          <div class="flex gap-2 flex-1 justify-end min-w-[200px]">
+            
+            <!-- Location 篩選 -->
+            <div class="relative w-full max-w-[130px]">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none text-pink-100">
+                <i class="fa-solid fa-location-dot text-xs"></i>
+              </div>
+              <select id="filter-location" class="block w-full pl-7 pr-6 py-1.5 text-xs bg-[#FFB7D5] border border-pink-200 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-white cursor-pointer hover:bg-[#ffa6cc] transition-colors">
+                <option value="" disabled selected>地區</option>
+                <option value="All">全部</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-pink-100">
+                <i class="fa-solid fa-chevron-down text-[10px]"></i>
+              </div>
+            </div>
+
+            <!-- Category 篩選 -->
+            <div class="relative w-full max-w-[110px]">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none text-pink-100">
+                  <i class="fa-solid fa-filter text-xs"></i>
+                </div>
+                <select id="filter-category" class="block w-full pl-7 pr-6 py-1.5 text-xs bg-[#FFB7D5] border border-pink-200 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-white cursor-pointer hover:bg-[#ffa6cc] transition-colors">
+                  <option value="" disabled selected>分類</option>
+                  <option value="All">全部</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-pink-100">
+                  <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                </div>
+              </div>
+
+          </div>
+        </div>
+      </header>
+
+      <!-- 2. 內容列表區域 -->
+      <!-- 主要內容卡片區塊背景改為 #e8f0fe -->
+      <main id="card-container" class="flex-1 p-3 space-y-3 bg-[#FFF7FB]">
+        <!-- 載入中狀態 -->
+        <div id="loading" class="flex flex-col items-center justify-center py-10">
+          <div class="loader mb-3"></div>
+          <p class="text-gray-500 text-xs">正在讀取資料...</p>
+        </div>
+      </main>
+
+      <!-- 底部資訊 -->
+      <footer class="p-2 text-center text-[10px] text-gray-400 border-t bg-white">
+        Powered by Google Apps Script
+      </footer>
+
+    </div>
+
+    <script>
+      // 全域變數儲存資料
+      let allData = [];
+      
+      // 網頁載入完成後執行
+      document.addEventListener('DOMContentLoaded', function() {
+        fetchData();
+        
+        // 綁定篩選器事件
+        document.getElementById('filter-location').addEventListener('change', renderCards);
+        document.getElementById('filter-category').addEventListener('change', renderCards);
+      });
+
+      // 從後端獲取資料
+      function fetchData() {
+        // 如果是在本地測試或預覽，google 可能未定義，這裡加個檢查（正式部署時不需要）
+        if (typeof google === 'undefined' || typeof google.script === 'undefined') {
+             console.log("Local preview mode: No backend data.");
+             // 模擬資料用於預覽 UI
+             onDataReceived([
+                 {location: '東京', category: '景點', name: '預覽: 晴空塔', detail1: '世界最高電波塔', detail2: '推薦傍晚去', status: 'Open', mapLink: 'https://www.google.com/maps/search/?api=1&query=東京晴空塔', imageUrl: 'https://placehold.co/128x110/3b82f6/ffffff?text=晴空塔'},
+                 {location: '大阪', category: '美食', name: '預覽: 章魚燒', detail1: '道頓堀必吃', detail2: '排隊約10分', status: 'Open', mapLink: 'https://www.google.com/maps/search/?api=1&query=大阪章魚燒', imageUrl: 'https://placehold.co/128x110/3b82f6/ffffff?text=章魚燒'}
+             ]);
+             return;
+        }
+
+        google.script.run
+          .withSuccessHandler(onDataReceived)
+          .withFailureHandler(onError)
+          .getData();
+      }
+
+      function onDataReceived(data) {
+        //allData = data
+        // 過濾掉名稱為 "Name" 或 "名稱" 的標題行，並確保 imageUrl 格式正確
+        allData = data.filter(item => 
+          item.name && 
+          item.name !== "Name" && 
+          item.name !== "名稱"
+        );
+        const loadingDiv = document.getElementById('loading');
+        if(loadingDiv) loadingDiv.style.display = 'none';
+
+        if (allData.length === 0) {
+          document.getElementById('card-container').innerHTML = 
+            '<div class="text-center text-gray-500 py-10 text-sm">試算表中沒有資料</div>';
+          return;
+        }
+
+        initFilters();
+        renderCards();
+      }
+
+      function onError(error) {
+        // 避免使用 alert()，改用 UI 顯示
+        const container = document.getElementById('card-container');
+        if(container) {
+          container.innerHTML = `
+            <div class="text-center py-10">
+              <i class="fa-solid fa-triangle-exclamation text-red-500 text-3xl mb-2"></i>
+              <p class="text-sm text-red-500">資料載入錯誤</p>
+              <p class="text-xs text-gray-500 mt-1">錯誤訊息: ${error.message}</p>
+            </div>`;
+        }
+      }
+
+      // 初始化下拉選單選項
+      function initFilters() {
+        const locations = new Set();
+        const categories = new Set();
+
+        allData.forEach(item => {
+          if(item.location) locations.add(item.location);
+          if(item.category) categories.add(item.category);
+        });
+
+        populateSelect('filter-location', Array.from(locations));
+        populateSelect('filter-category', Array.from(categories));
+      }
+
+      function populateSelect(elementId, items) {
+        const select = document.getElementById(elementId);
+        if(!select) return;
+        
+        // 保留前兩個選項：0 是標題(地區/分類)，1 是 全部
+          const titleOption = select.options[0];
+          const allOption = select.options[1];
+          
+          select.innerHTML = '';
+          select.appendChild(titleOption); // 放回標題
+          select.appendChild(allOption);   // 放回全部
+
+        items.sort().forEach(item => {
+          const option = document.createElement('option');
+          option.value = item;
+          option.textContent = item;
+          // 設定下拉清單展開後的文字顏色為深灰色，避免白色背景配白色字
+          option.className = "text-gray-700"; // 展開後的文字設為深色
+          select.appendChild(option);
+        });
+      }
+
+      // 渲染卡片邏輯
+      function renderCards() {
+        // 若選到空的(標題)或 'All'，皆視為不篩選
+        const locVal = document.getElementById('filter-location').value;
+        const catVal = document.getElementById('filter-category').value;
+        
+        const locationFilter = (locVal === "" || locVal === "All") ? 'All' : locVal;
+        const categoryFilter = (catVal === "" || catVal === "All") ? 'All' : catVal;
+              
+        const container = document.getElementById('card-container');
+        container.innerHTML = '';
+
+        // 篩選資料
+        const filteredData = allData.filter(item => {
+          const matchLocation = locationFilter === 'All' || item.location === locationFilter;
+          const matchCategory = categoryFilter === 'All' || item.category === categoryFilter;
+          return matchLocation && matchCategory;
+        });
+
+        // 顯示結果
+        if (filteredData.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-10 text-gray-400">
+              <i class="fa-regular fa-folder-open text-3xl mb-2"></i>
+              <p class="text-sm">沒有符合條件的項目</p>
+            </div>`;
+          return;
+        }
+
+        filteredData.forEach(item => {
+          const card = createCard(item);
+          container.appendChild(card);
+        });
+      }
+
+      // 建立單張卡片 HTML
+      function createCard(item) {
+        const div = document.createElement('div');
+        // 1. 高度設為 h-[150px], 圓角改為 rounded-2xl, 陰影改為 shadow-md
+        div.className = 'bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 flex h-[150px] relative';
+        
+        // 狀態標籤邏輯
+        const statusBadge = item.status ? 
+          `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+            item.status === '推薦' ? 'bg-green-100 text-green-700' : 
+            item.status === '待去' ? 'bg-orange-100 text-orange-700' : 
+            'bg-gray-100 text-gray-700'
+          }">${item.status}</span>` : '';
+
+        // 地圖按鈕邏輯
+        const mapButton = item.mapLink ? 
+          `<a href="${item.mapLink}" target="_blank" class="text-blue-600 hover:text-blue-800 text-[12px] flex items-center gap-1.5 inline-flex border border-blue-100 bg-blue-50/50 px-3 py-1.5 rounded-xl transition-colors">
+            <i class="fa-solid fa-location-arrow text-[11px]"></i> 導航
+          </a>` : '';
+
+        // 右側圖片區塊：配合 150px 高度
+        //啟用圖片「延遲載入」(Lazy Loading):只有當使用者滑到該卡片時，瀏覽器才去下載那張圖片。
+        const imageUrl = item.imageUrl || 'https://placehold.co/150x150/f1f5f9/94a3b8?text=No+Image';
+        const imagePlaceholder = `
+          <div class="w-36 h-full flex-shrink-0 bg-gray-50 border-l border-gray-50">
+            <img
+              src="${imageUrl}"
+              loading="lazy" 
+              onerror="this.onerror=null;this.src='https://placehold.co/150x150/f1f5f9/94a3b8?text=No+Image';"
+              class="w-full h-full object-cover"
+              alt="${item.name}圖片"
+            />
+          </div>
+        `;
+
+        div.innerHTML = `
+          <div class="flex-1 min-w-0 p-4 flex flex-col justify-between overflow-hidden">
+            <div class="overflow-hidden">
+              <div class="flex justify-between items-center mb-1.5">
+                <div class="flex items-center gap-1.5 overflow-hidden">
+                  <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md text-[10px] font-semibold truncate">${item.location}</span>
+                  <span class="text-gray-300 text-[10px]">|</span>
+                  <span class="text-gray-400 text-[10px] truncate">${item.category}</span>
+                </div>
+                ${statusBadge}
+              </div>
+              
+              <h3 class="font-bold text-gray-900 text-xl leading-snug line-clamp-2 mb-2">${item.name}</h3>
+              
+              <div class="space-y-1">
+                <p class="text-sm text-gray-600 line-clamp-1 flex items-center gap-2">
+                  <i class="fa-solid fa-circle-info text-blue-400/70 text-[11px] w-4 text-center"></i>
+                  <span class="truncate">${item.detail1 || '-'}</span>
+                </p>
+                <p class="text-sm text-gray-500 line-clamp-1 flex items-center gap-2">
+                  <i class="fa-regular fa-comment-dots text-gray-400/70 text-[11px] w-4 text-center"></i>
+                  <span class="truncate">${item.detail2 || '-'}</span>
+                </p>
+              </div>
+            </div>
+            
+            <div class="flex justify-end mt-1">
+              ${mapButton}
+            </div>
+          </div>
+          
+          ${imagePlaceholder}
+        `;
+        
+        return div;
+      }
+
+
+    </script>
+  </body>
+</html>
