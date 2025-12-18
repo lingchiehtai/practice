@@ -49,43 +49,43 @@
       <header class="bg-[#FF95CA] text-white p-3 sticky top-0 z-20 shadow-md">
         <div class="flex flex-wrap items-center justify-between gap-y-2 gap-x-2">
           
-          <!-- 左側標題 -->
           <h1 class="text-lg font-bold flex items-center gap-2 whitespace-nowrap flex-shrink-0">
             <i class="fa-solid fa-map-location-dot"></i>
             <span>景點美食</span>
           </h1>
 
-          <!-- 右側篩選器 (Flex wrap 確保小螢幕會自動換行，但儘量並排) -->
-          <div class="flex gap-2 flex-1 justify-end min-w-[200px]">
+          <div class="flex items-center gap-2 flex-1 justify-end">
             
-            <!-- Location 篩選 -->
-            <div class="relative w-full max-w-[130px]">
-              <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none text-pink-100">
-                <i class="fa-solid fa-location-dot text-xs"></i>
-              </div>
-              <select id="filter-location" class="block w-full pl-7 pr-6 py-1.5 text-xs bg-[#FFB7D5] border border-pink-200 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-white cursor-pointer hover:bg-[#ffa6cc] transition-colors">
+            <div class="relative w-[100px]">
+              <select id="filter-location" class="block w-full pl-2 pr-6 py-1.5 text-xs bg-[#FFB7D5] border border-pink-200 rounded-md text-white focus:outline-none cursor-pointer appearance-none">
                 <option value="" disabled selected>地區</option>
-                <option value="All">全部</option>
+                <option value="All">全部地區</option>
               </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-pink-100">
-                <i class="fa-solid fa-chevron-down text-[10px]"></i>
-              </div>
             </div>
 
-            <!-- Category 篩選 -->
-            <div class="relative w-full max-w-[110px]">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none text-pink-100">
-                  <i class="fa-solid fa-filter text-xs"></i>
-                </div>
-                <select id="filter-category" class="block w-full pl-7 pr-6 py-1.5 text-xs bg-[#FFB7D5] border border-pink-200 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-white cursor-pointer hover:bg-[#ffa6cc] transition-colors">
-                  <option value="" disabled selected>分類</option>
-                  <option value="All">全部</option>
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-pink-100">
-                  <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </div>
-              </div>
+            <div class="relative w-[85px]">
+              <select id="filter-category" class="block w-full pl-2 pr-6 py-1.5 text-xs bg-[#FFB7D5] border border-pink-200 rounded-md text-white focus:outline-none cursor-pointer appearance-none">
+                <option value="" disabled selected>分類</option>
+                <option value="All">全部分類</option>
+              </select>
+            </div>
 
+            <button id="search-toggle" class="p-1.5 hover:bg-pink-400 rounded-full transition-colors">
+              <i class="fa-solid fa-magnifying-glass text-sm"></i>
+            </button>
+
+          </div>
+        </div>
+
+        <div id="search-bar-container" class="hidden mt-2 pb-1">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="keyword-search" 
+              placeholder="搜尋... (多關鍵字用空格或&隔開)" 
+                class="w-full px-4 py-2 text-sm rounded-full border-none text-gray-700 focus:ring-2 focus:ring-pink-300 outline-none shadow-inner"
+              >
+            <i class="fa-solid fa-xmark absolute right-3 top-2.5 text-gray-400 cursor-pointer hover:text-gray-600" id="clear-search"></i>
           </div>
         </div>
       </header>
@@ -187,11 +187,12 @@
         populateSelect('filter-category', Array.from(categories));
       }
 
+      //下拉選單
       function populateSelect(elementId, items) {
         const select = document.getElementById(elementId);
         if(!select) return;
         
-        // 保留前兩個選項：0 是標題(地區/分類)，1 是 全部
+        // 保留前兩個選項：0 是標題(地區/分類)，1 是 全部地區/全部分類
           const titleOption = select.options[0];
           const allOption = select.options[1];
           
@@ -210,37 +211,65 @@
       }
 
       // 渲染卡片邏輯
+      // 1. 切換搜尋框顯示/隱藏
+      document.getElementById('search-toggle').addEventListener('click', () => {
+        const container = document.getElementById('search-bar-container');
+        container.classList.toggle('hidden');
+        if (!container.classList.contains('hidden')) {
+          document.getElementById('keyword-search').focus();
+        }
+      });
+
+      // 2. 監聽搜尋輸入
+      document.getElementById('keyword-search').addEventListener('input', renderCards);
+
+      // 3. 清除搜尋
+      document.getElementById('clear-search').addEventListener('click', () => {
+        document.getElementById('keyword-search').value = '';
+        renderCards();
+      });
+
+      // 4. 修改原本的 renderCards 函式
       function renderCards() {
-        // 若選到空的(標題)或 'All'，皆視為不篩選
         const locVal = document.getElementById('filter-location').value;
         const catVal = document.getElementById('filter-category').value;
+        const rawKeyword = document.getElementById('keyword-search').value.toLowerCase(); 
         
         const locationFilter = (locVal === "" || locVal === "All") ? 'All' : locVal;
         const categoryFilter = (catVal === "" || catVal === "All") ? 'All' : catVal;
-              
+
         const container = document.getElementById('card-container');
         container.innerHTML = '';
 
-        // 篩選資料
+        // --- 核心修正：同時支援 空格 或 & 分割 ---
+        // 使用正則表達式 /[&\s]+/ 代表只要遇到 & 或 任何空格(包含連續空格) 就切開
+        const keywords = rawKeyword.split(/[&\s]+/).map(k => k.trim()).filter(k => k !== "");
+
         const filteredData = allData.filter(item => {
           const matchLocation = locationFilter === 'All' || item.location === locationFilter;
           const matchCategory = categoryFilter === 'All' || item.category === categoryFilter;
-          return matchLocation && matchCategory;
+          
+          // 搜尋目標包含：名稱、地區、分類、細節1、細節2
+          const searchTarget = `${item.name} ${item.location} ${item.category} ${item.detail1} ${item.detail2}`.toLowerCase();
+          
+          // AND 邏輯：必須符合所有分割出來的詞
+          const matchKeywords = keywords.length === 0 || keywords.every(k => searchTarget.includes(k));
+
+          return matchLocation && matchCategory && matchKeywords;
         });
 
-        // 顯示結果
+        // 如果找不到項目
         if (filteredData.length === 0) {
           container.innerHTML = `
             <div class="text-center py-10 text-gray-400">
-              <i class="fa-regular fa-folder-open text-3xl mb-2"></i>
-              <p class="text-sm">沒有符合條件的項目</p>
+              <i class="fa-solid fa-magnifying-glass text-4xl mb-3 block text-pink-200"></i>
+              <p>找不到符合的項目</p>
             </div>`;
           return;
         }
 
         filteredData.forEach(item => {
-          const card = createCard(item);
-          container.appendChild(card);
+          container.appendChild(createCard(item));
         });
       }
 
@@ -258,21 +287,21 @@
             'bg-gray-100 text-gray-700'
           }">${item.status}</span>` : '';
 
-        // 地圖按鈕邏輯
+        // 地圖按鈕邏輯: 導航
         const mapButton = item.mapLink ? 
           `<a href="${item.mapLink}" target="_blank" class="text-blue-600 hover:text-blue-800 text-[12px] flex items-center gap-1.5 inline-flex border border-blue-100 bg-blue-50/50 px-3 py-1.5 rounded-xl transition-colors">
-            <i class="fa-solid fa-location-arrow text-[11px]"></i> 導航
+            <i class="fa-solid fa-location-arrow text-[11px]"></i> Map
           </a>` : '';
 
         // 右側圖片區塊：配合 150px 高度
         //啟用圖片「延遲載入」(Lazy Loading):只有當使用者滑到該卡片時，瀏覽器才去下載那張圖片。
         const imageUrl = item.imageUrl || 'https://placehold.co/150x150/f1f5f9/94a3b8?text=No+Image';
         const imagePlaceholder = `
-          <div class="w-36 h-full flex-shrink-0 bg-gray-50 border-l border-gray-50">
+          <div class="w-28 h-full flex-shrink-0 bg-gray-100 border-l border-gray-50 flex items-center justify-center overflow-hidden">
             <img
               src="${imageUrl}"
               loading="lazy" 
-              onerror="this.onerror=null;this.src='https://placehold.co/150x150/f1f5f9/94a3b8?text=No+Image';"
+              onerror="this.parentElement.innerHTML='<div class=\'flex flex-col items-center text-gray-400\'><i class=\'fa-solid fa-image text-xl mb-1\'></i><span class=\'text-[10px]\'>No Image</span></div>';"
               class="w-full h-full object-cover"
               alt="${item.name}圖片"
             />
@@ -280,7 +309,7 @@
         `;
 
         div.innerHTML = `
-          <div class="flex-1 min-w-0 p-4 flex flex-col justify-between overflow-hidden">
+          <div class="flex-1 min-w-0 p-3 flex flex-col justify-between overflow-hidden">
             <div class="overflow-hidden">
               <div class="flex justify-between items-center mb-1.5">
                 <div class="flex items-center gap-1.5 overflow-hidden">
@@ -291,14 +320,14 @@
                 ${statusBadge}
               </div>
               
-              <h3 class="font-bold text-gray-900 text-xl leading-snug line-clamp-2 mb-2">${item.name}</h3>
+              <h3 class="font-bold text-gray-900 text-lg leading-snug line-clamp-2 mb-2">${item.name}</h3>
               
               <div class="space-y-1">
-                <p class="text-sm text-gray-600 line-clamp-1 flex items-center gap-2">
+                <p class="text-xs text-gray-600 line-clamp-1 flex items-center gap-2">
                   <i class="fa-solid fa-circle-info text-blue-400/70 text-[11px] w-4 text-center"></i>
                   <span class="truncate">${item.detail1 || '-'}</span>
                 </p>
-                <p class="text-sm text-gray-500 line-clamp-1 flex items-center gap-2">
+                <p class="text-xs text-gray-500 line-clamp-1 flex items-center gap-2">
                   <i class="fa-regular fa-comment-dots text-gray-400/70 text-[11px] w-4 text-center"></i>
                   <span class="truncate">${item.detail2 || '-'}</span>
                 </p>
