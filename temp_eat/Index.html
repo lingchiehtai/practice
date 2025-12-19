@@ -44,7 +44,7 @@
         <div>
           <label class="block text-[10px] text-pink-400 font-bold mb-0.5 ml-1 uppercase">Keyword Search</label>
           <div class="relative">
-            <input type="text" id="keyword-search" placeholder="搜尋店名、餐點..." class="w-full px-4 py-2 text-sm rounded-xl border border-gray-100 bg-gray-50 text-gray-700 focus:ring-2 focus:ring-pink-200 outline-none">
+            <input type="text" id="keyword-search" placeholder="搜尋多個關鍵字 (可用空格/&)" class="w-full px-4 py-2 text-sm rounded-xl border border-gray-100 bg-gray-50 text-gray-700 focus:ring-2 focus:ring-pink-200 outline-none">
             <i class="fa-solid fa-xmark absolute right-3 top-2.5 text-gray-300 cursor-pointer" id="clear-search"></i>
           </div>
         </div>
@@ -75,14 +75,16 @@
       </div>
     </div>
 
-    <div id="filter-status-bar" class="hidden bg-white border-b-2 border-pink-100 px-4 py-3 flex items-center justify-between shadow-sm">
-      <div class="flex items-center gap-2 overflow-hidden">
-        <span class="text-xs font-black text-pink-500 uppercase flex-shrink-0 tracking-wider">篩選中:</span>
-        <span id="current-filter-text" class="text-sm text-gray-900 font-bold truncate"></span>
+    <div id="filter-status-bar" class="hidden bg-pink-50 border-b-2 border-pink-100 px-3 py-3 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-1.5 overflow-hidden flex-1">
+        <i class="fa-solid fa-filter text-pink-500 text-xs flex-shrink-0"></i>
+        <span class="text-sm font-black text-pink-500 uppercase flex-shrink-0">篩選:</span>
+        <span id="current-filter-text" class="text-base text-gray-900 font-black truncate tracking-tight"></span>
       </div>
-      <button id="reset-all" class="flex-shrink-0 flex items-center gap-1 bg-gray-100 hover:bg-pink-600 hover:text-white text-gray-600 px-3 py-1.5 rounded-xl text-xs font-black transition-all active:scale-95 border border-gray-200">
+      
+      <button id="reset-all" class="ml-2 flex-shrink-0 flex items-center gap-1 bg-white text-pink-600 px-3 py-1 rounded-xl text-xs font-black transition-all active:scale-95 border border-pink-200 shadow-sm">
         <i class="fa-solid fa-rotate-left text-[10px]"></i>
-        回到 ALL
+        清除
       </button>
     </div>
 
