@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html>
 <head>
   <base target="_top">
@@ -6,12 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <style>
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #f1f1f1; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    
     .loader {
       border: 3px solid #f3f3f3;
       border-top: 3px solid #FF95CA;
@@ -20,63 +18,83 @@
       height: 30px;
       animation: spin 1s linear infinite;
     }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    select { -webkit-appearance: none; -moz-appearance: none; appearance: none; }
     
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    /* 自定義文字陰影：讓標題更立體 */
+    .text-shadow-pink {
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), 0px 0px 10px rgba(255, 255, 255, 0.2);
     }
-    
-    select {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
+
+    /* 彈出面板動畫 */
+    #filter-panel {
+      transition: all 0.3s ease-in-out;
+      transform-origin: top right;
     }
+    #filter-panel.hidden {
+      display: none;
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
   </style>
 </head>
 
 <body class="bg-[#FFF7FB] min-h-screen text-gray-800">
   <div class="max-w-md mx-auto bg-white min-h-screen shadow-lg flex flex-col relative">
     
-    <header class="bg-[#FF95CA] text-white p-3 sticky top-0 z-20 shadow-md">
-      <div class="flex flex-wrap items-center justify-between gap-y-2 gap-x-2">
-        <h1 class="text-lg font-bold flex items-center gap-2 whitespace-nowrap flex-shrink-0">
-          <i class="fa-solid fa-map-location-dot"></i>
-          <span>景點美食</span>
-        </h1>
-
-        <div class="flex items-center gap-2 flex-1 justify-end">
-          <div class="relative w-[100px]">
-            <select id="filter-location" class="block w-full pl-2 pr-6 py-1.5 text-xs bg-[#FFB7D5] border border-pink-200 rounded-md text-white focus:outline-none cursor-pointer appearance-none">
-              <option value="" disabled selected>地區</option>
-              <option value="All">全部地區</option>
-            </select>
-          </div>
-
-          <div class="relative w-[85px]">
-            <select id="filter-category" class="block w-full pl-2 pr-6 py-1.5 text-xs bg-[#FFB7D5] border border-pink-200 rounded-md text-white focus:outline-none cursor-pointer appearance-none">
-              <option value="" disabled selected>分類</option>
-              <option value="All">全部分類</option>
-            </select>
-          </div>
-
-          <button id="search-toggle" class="p-1.5 hover:bg-pink-400 rounded-full transition-colors">
-            <i class="fa-solid fa-magnifying-glass text-sm"></i>
-          </button>
-        </div>
-      </div>
-
-      <div id="search-bar-container" class="hidden mt-2 pb-1">
-        <div class="relative">
-          <input type="text" id="keyword-search" placeholder="搜尋... (多關鍵字用空格或&隔開)" class="w-full px-4 py-2 text-sm rounded-full border-none text-gray-700 focus:ring-2 focus:ring-pink-300 outline-none shadow-inner">
-          <i class="fa-solid fa-xmark absolute right-3 top-2.5 text-gray-400 cursor-pointer hover:text-gray-600" id="clear-search"></i>
-        </div>
-      </div>
+    <header class="bg-[#FF95CA] text-white py-1.5 px-3 sticky top-0 z-40 shadow-md flex items-center justify-between min-h-[50px]">
+      <h1 class="text-xl font-black flex items-center gap-2 tracking-tight text-shadow-pink">
+        <i class="fa-solid fa-map-location-dot text-lg"></i>
+        <span> 景點美食清單</span>
+      </h1>
+      <button id="search-toggle" class="w-9 h-9 flex items-center justify-center hover:bg-pink-400 rounded-full transition-colors">
+        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+      </button>
     </header>
+
+    <div id="filter-panel" class="hidden absolute top-12 right-3 left-3 bg-white border border-pink-100 shadow-xl rounded-2xl z-50 p-3"> <div class="space-y-3"> <div>
+          <label class="block text-[10px] text-pink-400 font-bold mb-0.5 ml-1 uppercase">Keyword Search</label>
+          <div class="relative">
+            <input type="text" id="keyword-search" placeholder="搜尋店名、餐點... (支援空格/&)" class="w-full px-4 py-2 text-sm rounded-xl border border-gray-100 bg-gray-50 text-gray-700 focus:ring-2 focus:ring-pink-200 outline-none">
+            <i class="fa-solid fa-xmark absolute right-3 top-2.5 text-gray-300 cursor-pointer" id="clear-search"></i>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] text-pink-400 font-bold mb-0.5 ml-1 uppercase">Location</label>
+            <div class="relative">
+              <select id="filter-location" class="block w-full pl-3 pr-8 py-2 text-sm bg-gray-50 border border-gray-100 rounded-xl text-gray-700 focus:outline-none cursor-pointer appearance-none">
+                <option value="" disabled selected>地區</option>
+                <option value="All">全部地區</option>
+              </select>
+              <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-[10px] text-gray-400 pointer-events-none"></i>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] text-pink-400 font-bold mb-0.5 ml-1 uppercase">Category</label>
+            <div class="relative">
+              <select id="filter-category" class="block w-full pl-3 pr-8 py-2 text-sm bg-gray-50 border border-gray-100 rounded-xl text-gray-700 focus:outline-none cursor-pointer appearance-none">
+                <option value="" disabled selected>分類</option>
+                <option value="All">全部分類</option>
+              </select>
+              <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-[10px] text-gray-400 pointer-events-none"></i>
+            </div>
+          </div>
+        </div>
+
+        <button id="close-panel" class="w-1/2 mx-auto py-1.5 bg-gray-50 hover:bg-gray-100 active:scale-95 text-gray-400 hover:text-pink-500 rounded-lg text-[10px] font-bold transition-all border border-gray-100 flex items-center justify-center gap-2 shadow-sm">
+          <i class="fa-solid fa-chevron-up text-[8px]"></i>
+          <span>收起篩選</span>
+        </button>
+      </div>
+    </div>
 
     <main id="card-container" class="flex-1 p-3 space-y-3 bg-[#FFF7FB]">
       <div id="loading" class="flex flex-col items-center justify-center py-20">
         <div class="loader mb-4"></div>
-        <p class="text-pink-400 text-sm font-medium animate-pulse">正在為您準備清單...</p>
+        <p class="text-pink-400 text-sm font-medium animate-pulse">正在準備清單...</p>
       </div>
     </main>
 
@@ -88,17 +106,30 @@
   <script>
     let allData = [];
     let currentRenderIndex = 0;
-    const BATCH_SIZE = 10; // 調整為 10 筆效能更佳
+    const BATCH_SIZE = 10;
     
     document.addEventListener('DOMContentLoaded', function() {
       fetchData();
+      
+      const searchToggle = document.getElementById('search-toggle');
+      const filterPanel = document.getElementById('filter-panel');
+      const closePanel = document.getElementById('close-panel');
+      
+      // 切換面板顯示/隱藏
+      searchToggle.addEventListener('click', () => {
+        const isHidden = filterPanel.classList.toggle('hidden');
+        if (!isHidden) {
+          document.getElementById('keyword-search').focus();
+        }
+      });
+
+      closePanel.addEventListener('click', () => {
+        filterPanel.classList.add('hidden');
+      });
+
+      // 監聽篩選動作
       document.getElementById('filter-location').addEventListener('change', renderCards);
       document.getElementById('filter-category').addEventListener('change', renderCards);
-      document.getElementById('search-toggle').addEventListener('click', () => {
-        const container = document.getElementById('search-bar-container');
-        container.classList.toggle('hidden');
-        if (!container.classList.contains('hidden')) document.getElementById('keyword-search').focus();
-      });
       document.getElementById('keyword-search').addEventListener('input', renderCards);
       document.getElementById('clear-search').addEventListener('click', () => {
         document.getElementById('keyword-search').value = '';
@@ -109,8 +140,8 @@
     function fetchData() {
       if (typeof google === 'undefined') {
         onDataReceived([
-          {location: '高雄', category: '美食', name: '誠實咖啡 (高雄夢時代店)', detail1: '$598', detail2: '蒜香鮮蝦義大利麵', mapLink: 'https://maps.google.com', imageUrl: ''},
-          {location: '高雄', category: '景點', name: '高雄流行音樂中心', detail1: '愛河灣', detail2: '夜景很美', mapLink: 'https://maps.google.com', imageUrl: ''}
+          {location: '高雄', category: '美食', name: '成真咖啡 (高雄夢時代店)', detail1: '2025新開幕', detail2: '鬆餅,義大利麵', mapLink: 'https://maps.app.goo.gl/MLQa862aEk39CtSbA', imageUrl:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxWZDFKj6K810fkz0f9FIDnJeoFGCpHC7FAHGEF_QzC6v5pXR4jeSlJFM&s'},
+          {location: '高雄', category: '景點', name: '高雄流行音樂中心', detail1: '設計以海洋、港灣元素為靈感', detail2: '港邊,夕陽,夜景', mapLink: 'https://maps.app.goo.gl/5GhQMnFribr2uFRdA', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx6tiZeiMcgaFn51o7Rk40Rw1CoBNXxQS35wDPtE57h5JcxoH97KSCBQ&s'}
         ]);
         return;
       }
@@ -121,10 +152,6 @@
       allData = data.filter(item => item.name && item.name !== "Name" && item.name !== "名稱");
       const loadingDiv = document.getElementById('loading');
       if(loadingDiv) loadingDiv.style.display = 'none';
-      if (allData.length === 0) {
-        document.getElementById('card-container').innerHTML = '<div class="text-center text-gray-500 py-10 text-sm">沒有資料</div>';
-        return;
-      }
       initFilters();
       renderCards();
     }
@@ -155,7 +182,6 @@
         const option = document.createElement('option');
         option.value = item;
         option.textContent = item;
-        option.className = "text-gray-700";
         select.appendChild(option);
       });
     }
@@ -185,22 +211,17 @@
         container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">找不到項目</div>';
         return;
       }
-
       displayBatch(filteredData, container);
     }
 
     function displayBatch(data, container) {
       const nextBatch = data.slice(currentRenderIndex, currentRenderIndex + BATCH_SIZE);
-      
       nextBatch.forEach(item => {
-        const cardHtml = createCard(item);
         const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = cardHtml;
+        tempDiv.innerHTML = createCard(item);
         container.appendChild(tempDiv.firstElementChild);
       });
-
       currentRenderIndex += BATCH_SIZE;
-
       if (currentRenderIndex < data.length) {
         requestAnimationFrame(() => displayBatch(data, container));
       }
@@ -208,7 +229,7 @@
 
     function createCard(item) {
       const mapButton = item.mapLink ? 
-        `<a href="${item.mapLink}" target="_blank" class="text-pink-600 hover:text-white hover:bg-pink-400 text-[10px] flex items-center gap-1 border border-pink-200 bg-[#FFF1F8] px-2.5 py-0.5 rounded-md transition-all ml-auto flex-shrink-0 shadow-sm">
+        `<a href="${item.mapLink}" target="_blank" class="text-pink-600 hover:text-white hover:bg-pink-400 text-[10px] flex items-center gap-1 border border-pink-200 bg-[#FFF1F8] px-2.5 py-1 rounded-md transition-all ml-auto flex-shrink-0 shadow-sm">
           <i class="fa-solid fa-location-arrow text-[9px]"></i> Map
         </a>` : '';
 

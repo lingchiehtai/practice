@@ -33,7 +33,6 @@ function getData() {
       mapLink: row[5], // 原始 MapLink 欄位（可能為空）
       status: row[6],
       imageUrl: row[7]   // H 欄 - 新增圖片 URL 欄位
-      //imageUrl: (row[7] && row[7].startsWith('http')) ? row[7] : 'https://via.placeholder.com/150?text=No+Image'  //空白或錯誤訊息，網頁就會顯示一張「No Image」的預設圖
     };
   }).filter(item => item.name !== ""); 
 
@@ -125,7 +124,7 @@ function runImageFetch() {
 
 
 /**
- * [選擇性使用] 初次設定用
+ * [初次設定用]
  * 如果你的試算表是空的，執行這個函式可以自動填入標題和範例資料
  */
 function setupDemoSheet() {
