@@ -20,23 +20,9 @@
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     select { -webkit-appearance: none; -moz-appearance: none; appearance: none; }
-    
-    /* 自定義文字陰影：讓標題更立體 */
-    .text-shadow-pink {
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), 0px 0px 10px rgba(255, 255, 255, 0.2);
-    }
-
-    /* 彈出面板動畫 */
-    #filter-panel {
-      transition: all 0.3s ease-in-out;
-      transform-origin: top right;
-    }
-    #filter-panel.hidden {
-      display: none;
-      opacity: 0;
-      transform: scale(0.95);
-    }
-
+    .text-shadow-pink { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), 0px 0px 10px rgba(255, 255, 255, 0.2); }
+    #filter-panel { transition: all 0.3s ease-in-out; transform-origin: top right; }
+    #filter-panel.hidden { display: none; opacity: 0; transform: scale(0.95); }
   </style>
 </head>
 
@@ -46,27 +32,27 @@
     <header class="bg-[#FF95CA] text-white py-1.5 px-3 sticky top-0 z-40 shadow-md flex items-center justify-between min-h-[50px]">
       <h1 class="text-xl font-black flex items-center gap-2 tracking-tight text-shadow-pink">
         <i class="fa-solid fa-map-location-dot text-lg"></i>
-        <span> 景點美食清單</span>
+        <span>景點美食清單</span>
       </h1>
       <button id="search-toggle" class="w-9 h-9 flex items-center justify-center hover:bg-pink-400 rounded-full transition-colors">
         <i class="fa-solid fa-magnifying-glass text-lg"></i>
       </button>
     </header>
 
-    <div id="filter-panel" class="hidden absolute top-12 right-3 left-3 bg-white border border-pink-100 shadow-xl rounded-2xl z-50 p-3"> <div class="space-y-3"> <div>
+    <div id="filter-panel" class="hidden absolute top-12 right-3 left-3 bg-white border border-pink-100 shadow-xl rounded-2xl z-50 p-3"> 
+      <div class="space-y-3"> 
+        <div>
           <label class="block text-[10px] text-pink-400 font-bold mb-0.5 ml-1 uppercase">Keyword Search</label>
           <div class="relative">
-            <input type="text" id="keyword-search" placeholder="搜尋店名、餐點... (支援空格/&)" class="w-full px-4 py-2 text-sm rounded-xl border border-gray-100 bg-gray-50 text-gray-700 focus:ring-2 focus:ring-pink-200 outline-none">
+            <input type="text" id="keyword-search" placeholder="搜尋店名、餐點..." class="w-full px-4 py-2 text-sm rounded-xl border border-gray-100 bg-gray-50 text-gray-700 focus:ring-2 focus:ring-pink-200 outline-none">
             <i class="fa-solid fa-xmark absolute right-3 top-2.5 text-gray-300 cursor-pointer" id="clear-search"></i>
           </div>
         </div>
-
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-[10px] text-pink-400 font-bold mb-0.5 ml-1 uppercase">Location</label>
             <div class="relative">
-              <select id="filter-location" class="block w-full pl-3 pr-8 py-2 text-sm bg-gray-50 border border-gray-100 rounded-xl text-gray-700 focus:outline-none cursor-pointer appearance-none">
-                <option value="" disabled selected>地區</option>
+              <select id="filter-location" class="block w-full pl-3 pr-8 py-2 text-sm bg-gray-50 border border-gray-100 rounded-xl text-gray-700 outline-none cursor-pointer">
                 <option value="All">全部地區</option>
               </select>
               <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-[10px] text-gray-400 pointer-events-none"></i>
@@ -75,21 +61,29 @@
           <div>
             <label class="block text-[10px] text-pink-400 font-bold mb-0.5 ml-1 uppercase">Category</label>
             <div class="relative">
-              <select id="filter-category" class="block w-full pl-3 pr-8 py-2 text-sm bg-gray-50 border border-gray-100 rounded-xl text-gray-700 focus:outline-none cursor-pointer appearance-none">
-                <option value="" disabled selected>分類</option>
+              <select id="filter-category" class="block w-full pl-3 pr-8 py-2 text-sm bg-gray-50 border border-gray-100 rounded-xl text-gray-700 outline-none cursor-pointer">
                 <option value="All">全部分類</option>
               </select>
               <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-[10px] text-gray-400 pointer-events-none"></i>
             </div>
           </div>
         </div>
-
-        <button id="close-panel" class="w-1/2 mx-auto mt-1 py-2 bg-white hover:bg-gray-50 active:scale-95 text-gray-900 rounded-xl text-xs font-black transition-all border border-gray-100 flex items-center justify-center gap-2 shadow-sm">
+        <button id="close-panel" class="w-1/2 mx-auto mt-1 py-2 bg-white hover:bg-gray-50 active:scale-95 text-gray-900 rounded-xl text-xs font-black border border-gray-100 flex items-center justify-center gap-2 shadow-sm transition-all">
           <i class="fa-solid fa-chevron-up text-[10px] text-gray-400"></i>
           <span>收起篩選</span>
-      </button>
-
+        </button>
       </div>
+    </div>
+
+    <div id="filter-status-bar" class="hidden bg-white border-b-2 border-pink-100 px-4 py-3 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-2 overflow-hidden">
+        <span class="text-xs font-black text-pink-500 uppercase flex-shrink-0 tracking-wider">篩選中:</span>
+        <span id="current-filter-text" class="text-sm text-gray-900 font-bold truncate"></span>
+      </div>
+      <button id="reset-all" class="flex-shrink-0 flex items-center gap-1 bg-gray-100 hover:bg-pink-600 hover:text-white text-gray-600 px-3 py-1.5 rounded-xl text-xs font-black transition-all active:scale-95 border border-gray-200">
+        <i class="fa-solid fa-rotate-left text-[10px]"></i>
+        回到 ALL
+      </button>
     </div>
 
     <main id="card-container" class="flex-1 p-3 space-y-3 bg-[#FFF7FB]">
@@ -115,20 +109,16 @@
       const searchToggle = document.getElementById('search-toggle');
       const filterPanel = document.getElementById('filter-panel');
       const closePanel = document.getElementById('close-panel');
+      const resetBtn = document.getElementById('reset-all');
       
-      // 切換面板顯示/隱藏
       searchToggle.addEventListener('click', () => {
         const isHidden = filterPanel.classList.toggle('hidden');
-        if (!isHidden) {
-          document.getElementById('keyword-search').focus();
-        }
+        if (!isHidden) document.getElementById('keyword-search').focus();
       });
 
-      closePanel.addEventListener('click', () => {
-        filterPanel.classList.add('hidden');
-      });
+      closePanel.addEventListener('click', () => filterPanel.classList.add('hidden'));
+      resetBtn.addEventListener('click', resetAllFilters);
 
-      // 監聽篩選動作
       document.getElementById('filter-location').addEventListener('change', renderCards);
       document.getElementById('filter-category').addEventListener('change', renderCards);
       document.getElementById('keyword-search').addEventListener('input', renderCards);
@@ -141,8 +131,8 @@
     function fetchData() {
       if (typeof google === 'undefined') {
         onDataReceived([
-          {location: '高雄', category: '美食', name: '成真咖啡 (高雄夢時代店)', detail1: '2025新開幕', detail2: '鬆餅,義大利麵', mapLink: 'https://maps.app.goo.gl/MLQa862aEk39CtSbA', imageUrl:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxWZDFKj6K810fkz0f9FIDnJeoFGCpHC7FAHGEF_QzC6v5pXR4jeSlJFM&s'},
-          {location: '高雄', category: '景點', name: '高雄流行音樂中心', detail1: '設計以海洋、港灣元素為靈感', detail2: '港邊,夕陽,夜景', mapLink: 'https://maps.app.goo.gl/5GhQMnFribr2uFRdA', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx6tiZeiMcgaFn51o7Rk40Rw1CoBNXxQS35wDPtE57h5JcxoH97KSCBQ&s'}
+          {location: '高雄', category: '美食', name: '成真咖啡 (高雄夢時代店)', detail1: '2025新開幕', detail2: '鬆餅,義大利麵', mapLink: '#', imageUrl:''},
+          {location: '高雄', category: '景點', name: '高雄流行音樂中心', detail1: '海洋元素設計', detail2: '夜景,夕陽', mapLink: '#', imageUrl: ''}
         ]);
         return;
       }
@@ -151,76 +141,95 @@
 
     function onDataReceived(data) {
       allData = data.filter(item => item.name && item.name !== "Name" && item.name !== "名稱");
-      const loadingDiv = document.getElementById('loading');
-      if(loadingDiv) loadingDiv.style.display = 'none';
+      document.getElementById('loading').style.display = 'none';
       initFilters();
       renderCards();
     }
 
     function onError(error) {
-      document.getElementById('card-container').innerHTML = `<div class="text-center py-10 text-red-500 text-xs">載入錯誤: ${error.message}</div>`;
+      document.getElementById('card-container').innerHTML = `<div class="p-10 text-center text-red-500 text-xs">載入失敗: ${error.message}</div>`;
     }
 
     function initFilters() {
-      const locations = new Set();
-      const categories = new Set();
+      const locs = new Set();
+      const cats = new Set();
       allData.forEach(item => {
-        if(item.location) locations.add(item.location);
-        if(item.category) categories.add(item.category);
+        if(item.location) locs.add(item.location);
+        if(item.category) cats.add(item.category);
       });
-      populateSelect('filter-location', Array.from(locations));
-      populateSelect('filter-category', Array.from(categories));
+      populateSelect('filter-location', Array.from(locs));
+      populateSelect('filter-category', Array.from(cats));
     }
 
-    function populateSelect(elementId, items) {
-      const select = document.getElementById(elementId);
-      const titleOption = select.options[0];
-      const allOption = select.options[1];
+    function populateSelect(id, items) {
+      const select = document.getElementById(id);
+      const firstOption = select.options[0];
       select.innerHTML = '';
-      select.appendChild(titleOption);
-      select.appendChild(allOption);
-      items.sort().forEach(item => {
-        const option = document.createElement('option');
-        option.value = item;
-        option.textContent = item;
-        select.appendChild(option);
+      select.appendChild(firstOption);
+      items.sort().forEach(text => {
+        const opt = document.createElement('option');
+        opt.value = text;
+        opt.textContent = text;
+        select.appendChild(opt);
       });
+    }
+
+    // 在 Header 下方、內容區上方新增一個動態顯示的區塊
+    function resetAllFilters() {
+      document.getElementById('filter-location').value = "All";
+      document.getElementById('filter-category').value = "All";
+      document.getElementById('keyword-search').value = "";
+      document.getElementById('filter-panel').classList.add('hidden');
+      renderCards();
     }
 
     function renderCards() {
       const locVal = document.getElementById('filter-location').value;
       const catVal = document.getElementById('filter-category').value;
-      const rawKeyword = document.getElementById('keyword-search').value.toLowerCase(); 
+      const rawKey = document.getElementById('keyword-search').value.toLowerCase();
       
-      const locationFilter = (locVal === "" || locVal === "All") ? 'All' : locVal;
-      const categoryFilter = (catVal === "" || catVal === "All") ? 'All' : catVal;
-      const keywords = rawKeyword.split(/[&\s]+/).map(k => k.trim()).filter(k => k !== "");
+      const keywords = rawKey.split(/[&\s]+/).map(k => k.trim()).filter(k => k !== "");
+      
+      // 更新狀態列
+      let conditions = [];
+      if (locVal !== 'All' && locVal !== "") conditions.push(locVal);
+      if (catVal !== 'All' && catVal !== "") conditions.push(catVal);
+      if (keywords.length > 0) conditions.push(keywords.join(' & '));
+
+      const bar = document.getElementById('filter-status-bar');
+      const txt = document.getElementById('current-filter-text');
+      if (conditions.length > 0) {
+        bar.classList.remove('hidden');
+        txt.textContent = conditions.join(' / ');
+      } else {
+        bar.classList.add('hidden');
+      }
 
       const container = document.getElementById('card-container');
       container.innerHTML = ''; 
       currentRenderIndex = 0;
 
-      const filteredData = allData.filter(item => {
-        const matchLocation = locationFilter === 'All' || item.location === locationFilter;
-        const matchCategory = categoryFilter === 'All' || item.category === categoryFilter;
-        const searchTarget = `${item.name} ${item.location} ${item.category} ${item.detail1} ${item.detail2}`.toLowerCase();
-        const matchKeywords = keywords.length === 0 || keywords.every(k => searchTarget.includes(k));
-        return matchLocation && matchCategory && matchKeywords;
+      const filtered = allData.filter(item => {
+        const mLoc = locVal === 'All' || locVal === "" || item.location === locVal;
+        const mCat = catVal === 'All' || catVal === "" || item.category === catVal;
+        const target = `${item.name} ${item.location} ${item.category} ${item.detail1} ${item.detail2}`.toLowerCase();
+        const mKey = keywords.length === 0 || keywords.every(k => target.includes(k));
+        return mLoc && mCat && mKey;
       });
 
-      if (filteredData.length === 0) {
-        container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">找不到項目</div>';
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">找不到相關項目</div>';
         return;
       }
-      displayBatch(filteredData, container);
+      displayBatch(filtered, container);
     }
 
     function displayBatch(data, container) {
       const nextBatch = data.slice(currentRenderIndex, currentRenderIndex + BATCH_SIZE);
       nextBatch.forEach(item => {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = createCard(item);
-        container.appendChild(tempDiv.firstElementChild);
+        const div = document.createElement('div');
+        div.innerHTML = createCard(item);
+        container.appendChild(div.firstElementChild);
       });
       currentRenderIndex += BATCH_SIZE;
       if (currentRenderIndex < data.length) {
@@ -228,45 +237,44 @@
       }
     }
 
+
     function createCard(item) {
-      const mapButton = item.mapLink ? 
-        `<a href="${item.mapLink}" target="_blank" class="text-pink-600 hover:text-white hover:bg-pink-400 text-[10px] flex items-center gap-1 border border-pink-200 bg-[#FFF1F8] px-2.5 py-1 rounded-md transition-all ml-auto flex-shrink-0 shadow-sm">
-          <i class="fa-solid fa-location-arrow text-[9px]"></i> Map
-        </a>` : '';
+      // 1. 先把圖片跟地圖按鈕處理好
+      var mapBtn = item.mapLink ? 
+        '<a href="' + item.mapLink + '" target="_blank" class="text-pink-600 border border-pink-200 bg-[#FFF1F8] px-2 py-1 rounded-md text-[10px] flex items-center gap-1 shadow-sm transition-all hover:bg-pink-400 hover:text-white"><i class="fa-solid fa-location-arrow text-[9px]"></i> Map</a>' : '';
+      
+      var imgUrl = item.imageUrl || "https://placehold.co/150x150/FFF7FB/FF95CA?text=No+Image";
 
-      const imageUrl = item.imageUrl || `https://placehold.co/150x150/FFF7FB/FF95CA?text=No+Image`;
-
-      return `
-        <div class="card-item bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden flex h-32 transition-all hover:shadow-md">
-          <div class="flex-1 p-3 flex flex-col min-w-0">
-            <div class="flex items-center justify-between mb-1 gap-2">
-              <div class="flex items-center gap-1.5 overflow-hidden">
-                <span class="bg-pink-50 text-pink-600 px-2 py-0.5 rounded-md text-[10px] font-semibold truncate">${item.location}</span>
-                <span class="text-gray-300 text-[10px]">|</span>
-                <span class="text-gray-400 text-[10px] truncate">${item.category}</span>
-              </div>
-              ${mapButton}
-            </div>
-            <div class="flex-1 flex flex-col justify-center">
-              <h3 class="font-bold text-gray-900 text-xl leading-tight line-clamp-1 mb-1">${item.name}</h3>
-              <div class="space-y-0.5">
-                <p class="text-xs text-gray-600 line-clamp-1 flex items-center gap-2">
-                  <i class="fa-solid fa-circle-info text-pink-300 text-[10px] w-3 text-center"></i>
-                  <span class="truncate">${item.detail1 || '-'}</span>
-                </p>
-                <p class="text-[11px] text-gray-500 line-clamp-1 flex items-center gap-2">
-                  <i class="fa-regular fa-comment-dots text-gray-400 text-[10px] w-3 text-center"></i>
-                  <span class="truncate">${item.detail2 || '-'}</span>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="w-24 h-full flex-shrink-0 bg-gray-50 border-l border-pink-50 flex items-center justify-center overflow-hidden">
-            <img src="${imageUrl}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'text-gray-300\'><i class=\'fa-solid fa-image text-lg\'></i></div>';" class="w-full h-full object-cover">
-          </div>
-        </div>
-      `;
+      // 2. 使用標準引號串接，避免 GAS 對 ` 符號內的 class 產生語法誤判
+      var html = '';
+      html += '<div class="bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden flex h-32 hover:shadow-md transition-all">';
+      html += '  <div class="flex-1 p-3 flex flex-col min-w-0">';
+      html += '    <div class="flex items-center justify-between mb-1 gap-2">';
+      html += '      <div class="flex items-center gap-1.5 overflow-hidden text-[10px]">';
+      html += '        <span class="bg-pink-50 text-pink-600 px-2 py-0.5 rounded-md font-semibold">' + item.location + '</span>';
+      html += '        <span class="text-gray-300">|</span>';
+      html += '        <span class="text-gray-400 truncate">' + item.category + '</span>';
+      html += '      </div>';
+      html += '      ' + mapBtn;
+      html += '    </div>';
+      html += '    <div class="flex-1 flex flex-col justify-center">';
+      html += '      <h3 class="font-bold text-gray-900 text-xl leading-tight line-clamp-1 mb-1">' + item.name + '</h3>';
+      html += '      <p class="text-xs text-gray-600 truncate flex items-center gap-2">';
+      html += '        <i class="fa-solid fa-circle-info text-pink-200 text-[10px]"></i> ' + (item.detail1 || '-');
+      html += '      </p>';
+      html += '      <p class="text-[11px] text-gray-500 truncate flex items-center gap-2">';
+      html += '        <i class="fa-regular fa-comment-dots text-gray-300 text-[10px]"></i> ' + (item.detail2 || '-');
+      html += '      </p>';
+      html += '    </div>';
+      html += '  </div>';
+      html += '  <div class="w-24 h-full flex-shrink-0 bg-gray-50 border-l border-pink-50 overflow-hidden">';
+      html += '    <img src="' + imgUrl + '" class="w-full h-full object-cover" onerror="this.src=\'https://placehold.co/150x150?text=Error\'">';
+      html += '  </div>';
+      html += '</div>';
+      
+      return html;
     }
+
   </script>
 </body>
 </html>
