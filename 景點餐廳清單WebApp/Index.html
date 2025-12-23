@@ -270,7 +270,8 @@
       html += '    </div>';
       html += '  </div>';
       html += '  <div class="w-24 h-full flex-shrink-0 bg-gray-50 border-l border-pink-50 overflow-hidden">';
-      html += '    <img src="' + imgUrl + '" class="w-full h-full object-cover" onerror="this.src=\'https://placehold.co/150x150?text=Error\'">';
+      // 加上 loading="lazy" 確保圖片非同步延遲載入
+      html += '    <img src="' + imgUrl + '" loading="lazy" class="w-full h-full object-cover" onerror="this.src=\'https://placehold.co/150x150?text=Error\'">';
       html += '  </div>';
       html += '</div>';
       
