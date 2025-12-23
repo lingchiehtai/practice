@@ -7,6 +7,18 @@
 
 ---
 
+## 特點摘要
+
+* 後端主機使用 Google Apps Script
+* 資料即時來自 Google Sheet，方便維護與編輯
+* 前後端分離，結構清楚
+* 適合做為：
+  * 旅遊清單
+  * 私人資料庫
+  * 行動裝置友善的清單型 Web App
+  
+---
+
 ## 整體架構
 
 ```
@@ -43,16 +55,6 @@ Google Sheet（資料來源）
 * 分批渲染（Batch Render，避免一次渲染過多資料）
 * 載入中動畫與錯誤處理
 
-### 資料流程
-
-```js
-fetchData()
-  → google.script.run.getData()
-  → onDataReceived(data)
-  → initFilters()
-  → renderCards()
-```
-
 ---
 
 ## 後端（code.gs）
@@ -64,16 +66,6 @@ fetchData()
 * 設定頁面標題與 viewport
 * 允許 iframe（方便嵌入）
 
-```js
-function doGet() {
-  return HtmlService.createTemplateFromFile('Index')
-    .evaluate()
-    .setTitle('日本景點美食清單')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-}
-```
-
----
 
 ### getData()
 
@@ -99,7 +91,7 @@ function doGet() {
 
 ## Google Sheet 資料格式
 
-| location | category | name | detail1 | detail2 | imageUrl | status |
+| location | category | name | detail1 | detail2 | mapLink  | imageUrl |
 | -------- | -------- | ---- | ------- | ------- | -------- | ------ |
 
 * 第一列為標題列
@@ -107,14 +99,4 @@ function doGet() {
 
 ---
 
-## 特點摘要
-
-* 無需額外後端主機，完全使用 Google Apps Script
-* 資料即時來自 Google Sheet，方便維護與編輯
-* 前後端分離，結構清楚
-* 適合做為：
-
-  * 旅遊清單
-  * 私人資料庫
-  * 行動裝置友善的清單型 Web App
 
