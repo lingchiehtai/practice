@@ -5,7 +5,7 @@
 #   - 根據照片的辨識內容和對應日期的筆記，透過 Gemini AI 產生描述性的關鍵字。
 #   - 將這些關鍵字附加到檔案名稱中，使檔案更具意義和可搜尋性。
 #   - 流程包含：解析筆記、找出需要重新命名的檔案，以及呼叫 AI 來生成新檔名。
-#   - 10/15 API 呼叫已改為 client.files.upload(上傳檔案) 和 client.models.generate_content(生成內容)
+#   - API 呼叫為 client.files.upload(上傳檔案) 和client.models.generate_content(生成內容)
 
 import os
 from pathlib import Path
@@ -16,7 +16,10 @@ from google import genai  #Google Gemini SDK
 
 # --- Configuration ---
 # 1. Set your API Key as an environment variable named GOOGLE_API_KEY
-API_KEY = os.getenv('GOOGLE_API_KEY')
+# 讀取多組金鑰
+ALL_KEYS = [os.getenv('GEMINI_API_KEY_1'), os.getenv('GEMINI_API_KEY_2'), os.getenv('GEMINI_API_KEY_3')]
+API_KEYS = [k for k in ALL_KEYS if k]  # 過濾掉沒設定到的空值
+print(f"有效的API Key 有 {len(API_KEYS)} 把")
 
 # 2. Define the directory where your photos are located.
 PHOTO_DIRECTORY = Path('.') 
@@ -78,11 +81,11 @@ def get_files_to_rename(directory):
     return sorted(unnamed_files)
 
 
-#呼叫 AI 生成新檔名 (上傳圖片和文字筆記到 Gemini API)
-def generate_new_filename(client, image_path, notes_for_date):
+# 呼叫 AI 生成新檔名 (上傳圖片和文字筆記到 Gemini API)
+def generate_new_filename(client_dict, image_path, notes_for_date):
     """
     Uses the Gemini API to generate a new filename based on the image and notes.
-    Includes retry logic for API errors.
+    包含自動切換 API Key 的邏輯。
     """
     original_stem = image_path.stem
     original_suffix = image_path.suffix
@@ -102,83 +105,86 @@ def generate_new_filename(client, image_path, notes_for_date):
     **Example:**
     If the original name is 2025-09-10_052 and the image shows a magnetic paper towel holder from Nitori, 
     a good response would be: 2025-09-10_052_宜得利_磁吸紙巾收納架.jpg
-
+    
     **Context from notes for this day:**
     ---
     {notes_for_date if notes_for_date else "No notes provided for this day."} 
     ---
-
-    Now, generate the new filename for the image provided.
     """
     
-    image_file = client.files.upload(file=str(image_path))
-
-    
     max_retries = 10
+
     for i in range(max_retries):
         try:
+            # 取得當前正在使用的 client
+            client = client_dict['client']
+            
+            # 上傳檔案
+            image_file = client.files.upload(file=str(image_path))
 
+            # 生成內容
             response = client.models.generate_content(
-                model = MODEL_NAME,  # 這裡需要傳入模型名稱的字串（例如 'gemini-2.5-flash'）
+                #這裡需要傳入模型名稱的字串（例如 'gemini-2.5-flash'）
+                model = MODEL_NAME,
                 contents = [prompt, image_file],
-                # ... 其他參數 ...
             )
             
+            # 成功後刪除遠端檔案
+            client.files.delete(name=image_file.name)
             
-            # Clean up the response to ensure it's a valid filename
             new_name = response.text.strip().replace('\n', '')
-            # Basic validation
             if new_name.startswith(original_stem) and new_name.endswith(original_suffix):
                 return new_name
             else:
                 print(f"  - Warning: AI returned an invalid format: '{new_name}'. Skipping.")
                 return None
                 
-        # 這是 generate_new_filename 函式內的 except 區塊
         except Exception as e:
             error_msg = str(e)
-            print(f"  - Error calling Gemini API: {error_msg}")
-
-            # 1. 優先處理 429 錯誤，並強制停止腳本 (配額超限)
+            
+            # 1. 核心切換邏輯：處理 429 錯誤 (配額超限,切換API KEY) ---
             if "429" in error_msg or "Quota exceeded" in error_msg:
-                print("\n🚨 STOP: 已達每日配額上限。腳本將強制停止。")
-                raise  # <--- 確保這行被執行，它會結束整個 main process
+                client_dict['key_index'] += 1 # 從 API_KEYS 切換下一組金鑰
+                
+                if client_dict['key_index'] < len(API_KEYS):
+                    new_key = API_KEYS[client_dict['key_index']]
+                    print(f"\n🚨 Key {client_dict['key_index']} 額度已滿，切換至下一把 Key...")
+                    # 重新初始化容器內的 client
+                    client_dict['client'] = genai.Client(api_key=new_key)
+                    # 使用新 Key 重試當前檔案
+                    continue 
+                else:
+                    print("\n❌ 所有 API Key 額度均已耗盡。腳本將強制停止。")
+                    raise 
 
             # 2. 處理 503 錯誤 (服務暫時不可用)
             elif "503" in error_msg and i < max_retries - 1:
                 wait_time = 2 ** i
-                print(f"  - Received 503 error. Retrying in {wait_time} seconds...")
+                print(f"  - Received 503 error. Retrying in {wait_time} seconds...")
                 time.sleep(wait_time)
-
             # 3. 其他錯誤: 達到最大重試次數或遇到其他錯誤時，跳過當前檔案。
             else:
-                print("  - Max retries reached or non-retryable error. Skipping file.")
-                return None                
-       
-    # 記得刪除檔案 (清理上傳到伺服器上的檔案)
-    client.files.delete(name=image_file.name)
+                print(f"  - Error calling Gemini API: {error_msg}. Skipping file.")
+                return None
 
     return None
-
 
 def main():
     """
     Main function to orchestrate the renaming process.
     """
-    if not API_KEY:
-        print("Error: GOOGLE_API_KEY environment variable not set.")
-        print("Please set your API key and run the script again.")
+    # 1. 檢查是否有任何金鑰可用
+    if not API_KEYS:
+        print("Error: No API keys set.")
         return
-
     
     print("正在初始化 Gemini Client...")
-    # 步驟 1: 建立 Client 物件，金鑰在此傳入
-    client = genai.Client(api_key=API_KEY)
     
-    # 步驟 2: 不需要額外建立 Model 物件，直接使用 Client 來呼叫服務
-    # 初始化新版 Client
-
-
+    # 2. 直接使用 API_KEYS 的第一個金鑰初始化容器
+    client_dict = {
+        'client': genai.Client(api_key=API_KEYS[0]),
+        'key_index': 0
+    }
 
     print("Starting photo renaming process...")
     
@@ -210,7 +216,7 @@ def main():
         notes_for_date = notes_by_date.get(notes_key, "")
         
         #生成新檔名
-        new_filename = generate_new_filename(client, file_path, notes_for_date)
+        new_filename = generate_new_filename(client_dict, file_path, notes_for_date)
 
         
         if new_filename:
