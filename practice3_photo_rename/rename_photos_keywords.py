@@ -17,7 +17,7 @@ from google import genai  #Google Gemini SDK
 # --- Configuration ---
 # 1. Set your API Key as an environment variable named GOOGLE_API_KEY
 # 讀取多組金鑰
-ALL_KEYS = [os.getenv('GEMINI_API_KEY_1'), os.getenv('GEMINI_API_KEY_2'), os.getenv('GEMINI_API_KEY_3')]
+ALL_KEYS = [os.getenv('GEMINI_API_KEY_1'), os.getenv('GEMINI_API_KEY_2'), os.getenv('GEMINI_API_KEY_3'), os.getenv('GEMINI_API_KEY_4')]
 API_KEYS = [k for k in ALL_KEYS if k]  # 過濾掉沒設定到的空值
 print(f"有效的API Key 有 {len(API_KEYS)} 把")
 
