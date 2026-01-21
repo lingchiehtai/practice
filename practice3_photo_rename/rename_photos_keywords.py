@@ -148,7 +148,7 @@ def generate_new_filename(client_dict, image_path, notes_for_date):
                 
                 if client_dict['key_index'] < len(API_KEYS):
                     new_key = API_KEYS[client_dict['key_index']]
-                    print(f"\n🚨 Key {client_dict['key_index']} 額度已滿，切換至下一把 Key...")
+                    print(f"\n⚠️ Key {client_dict['key_index']} 額度已滿，切換至下一把 Key...")
                     # 重新初始化容器內的 client
                     client_dict['client'] = genai.Client(api_key=new_key)
                     # 使用新 Key 重試當前檔案
