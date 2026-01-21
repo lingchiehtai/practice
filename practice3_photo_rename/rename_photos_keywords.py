@@ -142,7 +142,7 @@ def generate_new_filename(client_dict, image_path, notes_for_date):
         except Exception as e:
             error_msg = str(e)
             
-            # 1. 核心切換邏輯：處理 429 錯誤 (配額超限,切換API KEY) ---
+            # 1. 核心切換邏輯：處理 429 錯誤 (處理單個檔案: 配額超限,切換其他API KEY) ---
             if "429" in error_msg or "Quota exceeded" in error_msg:
                 client_dict['key_index'] += 1 # 從 API_KEYS 切換下一組金鑰
                 
@@ -199,40 +199,58 @@ def main():
 
     print(f"Found {len(files_to_process)} files to rename.")
 
-    for file_path in files_to_process:
-        print(f"\nProcessing '{file_path.name}'...")
-        
-        # 提取日期 Extract date from filename (e.g., '2025-09-12' -> '9/12')
-        try:
-            date_parts = file_path.stem.split('_')[0].split('-')
-            month = int(date_parts[1])
-            day = int(date_parts[2])
-            notes_key = f"{month}/{day}"
-        except (IndexError, ValueError):
-            print(f"  - Could not parse date from filename. Skipping.")
-            continue
+
+    # 新增計數器
+    renamed_count = 0
+    
+    try:
+        for file_path in files_to_process:
+            print(f"\nProcessing '{file_path.name}'...")
             
-        #根據提取的 月/日 從筆記字典中找到對應的筆記內容。
-        notes_for_date = notes_by_date.get(notes_key, "")
-        
-        #生成新檔名
-        new_filename = generate_new_filename(client_dict, file_path, notes_for_date)
-
-        
-        if new_filename:
+            # 提取日期 Extract date from filename (e.g., '2025-09-12' -> '9/12')
             try:
-                new_path = file_path.with_name(new_filename)
-                if new_path.exists():
-                    print(f"  - Error: A file named '{new_filename}' already exists. Skipping.")
-                    continue
+                date_parts = file_path.stem.split('_')[0].split('-')
+                month = int(date_parts[1])
+                day = int(date_parts[2])
+                notes_key = f"{month}/{day}"
+            except (IndexError, ValueError):
+                print(f"  - Could not parse date from filename. Skipping.")
+                continue
                 
-                file_path.rename(new_path)
-                print(f"  - Renamed to: '{new_filename}'")
-                
-            except OSError as e:
-                print(f"  - Error renaming file: {e}")
+            #根據提取的 月/日 從筆記字典中找到對應的筆記內容。
+            notes_for_date = notes_by_date.get(notes_key, "")
+            
+            #生成新檔名
+            new_filename = generate_new_filename(client_dict, file_path, notes_for_date)
 
+            
+            if new_filename:
+                try:
+                    new_path = file_path.with_name(new_filename)
+                    if new_path.exists():
+                        print(f"  - Error: A file named '{new_filename}' already exists. Skipping.")
+                        continue
+                    
+                    file_path.rename(new_path)
+                    print(f"  - Renamed to: '{new_filename}'")
+                    renamed_count += 1  # 成功重命名時增加計數器
+                    
+                except OSError as e:
+                    print(f"  - Error renaming file: {e}")
+    
+    except Exception as e:
+        # 捕捉任何未預期的例外狀況（如 API 額度耗盡）
+        error_msg = str(e)
+        if "所有 API Key 額度均已耗盡" in error_msg or "Quota exceeded" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
+            print(f"\n⚠️  API 額度已耗盡，停止處理剩餘檔案。")
+        else:
+            print(f"\n⚠️  發生錯誤，停止處理: {error_msg}")
+    
+   # 輸出統計結果
+    print(f"\n{'='*50}")
+    print(f"命名完成！總共處理了 {renamed_count} 張照片。")
     print("\nRenaming process complete.")
+    print(f"{'='*50}")
 
 if __name__ == "__main__":
     main()
