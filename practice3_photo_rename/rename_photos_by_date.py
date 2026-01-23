@@ -11,20 +11,28 @@ import subprocess
 import collections
 import re
 from datetime import datetime
+import re
+
+def has_chinese(text):
+    """檢查字串裡是否有中文字符"""
+    return bool(re.search(r'[\u4e00-\u9fff]', text))
+    
 
 def get_exif_date(filepath):
-    """使用 ExifTool 獲取照片的拍攝日期"""
     try:
-        # -s3 選項讓 ExifTool 只返回標籤的值，不含標籤名稱
         cmd = ["exiftool", "-s3", "-DateTimeOriginal", filepath]
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        date_str = result.stdout.strip()
+        # 拿掉 text=True，讓 stdout 是 bytes
+        result = subprocess.run(cmd, capture_output=True, check=True)
+        
+        # 用 utf-8 解碼，遇到錯就用 ? 取代
+        date_str = result.stdout.decode('utf-8', errors='replace').strip()
+        
         if date_str:
-            # 解析時間戳以應對不同格式，並確保排序正確
             return datetime.strptime(date_str, '%Y:%m:%d %H:%M:%S')
         else:
             print(f"檔案 {filepath}: 未找到 EXIF 拍攝時間，將使用檔案修改時間作為替代。")
             return datetime.fromtimestamp(os.path.getmtime(filepath))
+            
     except (subprocess.CalledProcessError, FileNotFoundError, ValueError) as e:
         print(f"無法處理檔案 {filepath}: {e}。將嘗試使用檔案修改時間作為替代。")
         try:
@@ -35,9 +43,29 @@ def get_exif_date(filepath):
 
 def rename_photos_by_date():
     """根據拍攝日期重新命名目前目錄中的照片"""
+    
     # 支援的圖片副檔名
     supported_extensions = ('.jpg', '.jpeg', '.png')
-    files_to_process = [f for f in os.listdir('.') if f.lower().endswith(supported_extensions)]
+    
+    date_pattern = re.compile(r'^\d{4}-\d{2}-\d{2}_\d{3}(?:_.+)?\.(jpg|jpeg|png|JPG|JPEG|PNG)$', re.IGNORECASE)
+
+
+    # 收集檔案列表
+    #files_to_process = [f for f in os.listdir('.') if f.lower().endswith(supported_extensions)]
+    # 收集檔案列表 過濾掉有中文關鍵字的檔名
+    files_to_process = []
+    for f in os.listdir('.'):
+        if not f.lower().endswith(supported_extensions):
+            continue
+        if has_chinese(f):
+            print(f"跳過有中文關鍵字的檔案：{f}")
+            continue
+        # 如果檔名已經是 yyyy-mm-dd_NNN 或 yyyy-mm-dd_NNN_xxx 格式→ 直接跳過
+        if date_pattern.match(f):
+            #print(f"檔案 '{f}' 已含日期與編號，保留既有關鍵字，跳過。")
+            print(f"跳過有日期與編號的檔案：{f}")
+            continue
+        files_to_process.append(f)
 
     if not files_to_process:
         print("在目前目錄中找不到任何支援的圖片檔案。")
@@ -58,16 +86,16 @@ def rename_photos_by_date():
         
         for index, (exif_dt, old_filename) in enumerate(files, 1):
             _, extension = os.path.splitext(old_filename)
+            
             new_filename = f"{date_str}_{index:03d}{extension}"
             
-            # 若檔案已是 yyyy-mm-dd_NNN 或 yyyy-mm-dd_NNN_xxx 形式，避免覆寫關鍵字 → 直接跳過
-            existing_pattern = re.compile(rf'^{re.escape(date_str)}_\d{{3}}(?:_.+)?{re.escape(extension)}$', re.IGNORECASE)
-            if existing_pattern.match(old_filename):
-                print(f"檔案 '{old_filename}' 已含日期與編號，保留既有關鍵字，跳過。")
-                continue
-
             if old_filename == new_filename:
                 print(f"檔案 '{old_filename}' 已是正確格式，跳過。")
+                continue
+
+            # 新增：檢查目標檔名是否已存在，避免 [WinError 183] 錯誤
+            if os.path.exists(new_filename):
+                print(f"跳過 '{old_filename}'，目標檔名'{new_filename}'已存在，以避免覆蓋 。")
                 continue
 
             try:
@@ -75,6 +103,7 @@ def rename_photos_by_date():
                 os.rename(old_filename, new_filename)
             except OSError as e:
                 print(f"重新命名 '{old_filename}' 時發生錯誤: {e}")
+                
 
 if __name__ == "__main__":
     # 檢查 exiftool 是否存在
@@ -84,4 +113,4 @@ if __name__ == "__main__":
         print("錯誤：找不到 ExifTool。請確保它已安裝並在系統 PATH 中。" )
     else:
         rename_photos_by_date()
-        print("\n照片重新命名完成。")
+        print("\n=== 照片重新命名完成 ===")
