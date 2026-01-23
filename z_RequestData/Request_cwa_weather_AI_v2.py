@@ -16,7 +16,7 @@ pic_url = "https://www.cwa.gov.tw/Data/typhoon/TY_WARN/B20.png"
 # --- 2. 配置 Gemini API 金鑰 ---
 # 建議從環境變數讀取，更安全
 try:
-    genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
+    genai.configure(api_key=os.environ["GEMINI_API_KEY_4"])
     print("成功讀取 GOOGLE_API_KEY 環境變數。")
 except KeyError:
     print("錯誤：未找到 GOOGLE_API_KEY 環境變數。")
