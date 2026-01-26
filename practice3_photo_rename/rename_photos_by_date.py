@@ -30,11 +30,11 @@ def get_exif_date(filepath):
         if date_str:
             return datetime.strptime(date_str, '%Y:%m:%d %H:%M:%S')
         else:
-            print(f"檔案 {filepath}: 未找到 EXIF 拍攝時間，將使用檔案修改時間作為替代。")
+            print(f"檔案 {filepath}: 未找到 EXIF 拍攝時間，將使用檔案修改時間更改檔名。")
             return datetime.fromtimestamp(os.path.getmtime(filepath))
             
     except (subprocess.CalledProcessError, FileNotFoundError, ValueError) as e:
-        print(f"無法處理檔案 {filepath}: {e}。將嘗試使用檔案修改時間作為替代。")
+        print(f"無法處理檔案 {filepath}: {e}。將嘗試使用檔案修改時間更改檔名。")
         try:
             return datetime.fromtimestamp(os.path.getmtime(filepath))
         except OSError as oe:
