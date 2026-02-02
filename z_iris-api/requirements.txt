@@ -1,0 +1,8 @@
+# Web 框架與伺服器
+fastapi==0.115.2
+uvicorn==0.32.0
+
+# 資料驗證與模型
+pydantic==2.9.2
+
+# 注意：numpy 和 scikit-learn 已使用 conda 安裝，不列入此檔案

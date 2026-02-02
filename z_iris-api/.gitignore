@@ -1,0 +1,18 @@
+# Python 快取檔案
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 虛擬環境資料夾（如果你之後有建立）
+venv/
+env/
+.venv/
+
+# 臨時檔案、log
+*.log
+*.cache
+
+# 模型檔案（因為檔案可能很大，建議不要上傳到 GitHub）
+*.pkl
+*.joblib
