@@ -5,4 +5,5 @@ uvicorn==0.32.0
 # 資料驗證與模型
 pydantic==2.9.2
 
-# 注意：numpy 和 scikit-learn 已使用 conda 安裝，不列入此檔案
+numpy>=1.23.0,<1.27.0
+scikit-learn==1.5.2
