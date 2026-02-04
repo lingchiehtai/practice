@@ -5,13 +5,41 @@ from pydantic import BaseModel, Field
 import pickle
 import numpy as np
 from typing import List
+import os
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="Iris Prediction API", version="1.0")
+#先定義 lifespan（放在 app 建立之前）
+@asynccontextmanager 
+async def lifespan(app: FastAPI):
+#async def load_model():
+    # startup 事件：這裡放原本的載入模型邏輯
+    global model
+    try:
+        model_path = os.getenv("MODEL_PATH", "models/iris_model.pkl")  # 預設值仍是原本路徑
+        with open(model_path, "rb") as f:
+            model = pickle.load(f)
+        print("Model loaded successfully!")
+    except Exception as e:
+        print(f"Model load failed: {e}")
+    yield  # ← 這行很重要，表示應用程式開始運行
+    # shutdown 事件：這裡可以放清理資源的程式碼（目前可留空）
+    print("Shutting down...")
+
+#建立 app 的位置
+app = FastAPI(
+    title="Iris Prediction API", 
+    version="1.0",
+    lifespan=lifespan   # ← 關鍵：把 lifespan 綁定進來
+)
 
 #新增 CORS 中介層，讓它只允許特定的來源
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],          # 目前先用 *，測試完再改成特定網址
+    allow_origins=[
+        "http://localhost:3000",     # 如果你有本地前端(前端常見的本地測試port)
+        "http://127.0.0.1:3000",
+        # "https://你的前端網址.com",   # 等上線時再加進去
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -21,15 +49,7 @@ app.add_middleware(
 model = None
 class_names = ["setosa", "versicolor", "virginica"]
 
-@app.on_event("startup")
-async def load_model():
-    global model
-    try:
-        with open("models/iris_model.pkl", "rb") as f:
-            model = pickle.load(f)
-        print("Model loaded successfully!")
-    except Exception as e:
-        print(f"Model load failed: {e}")
+
 
 class PredictionRequest(BaseModel):
     sepal_length: float = Field(..., gt=0, le=10)
