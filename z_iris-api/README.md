@@ -1,15 +1,15 @@
 
-```markdown
+
 # Iris Prediction API
 
-這是一個使用 FastAPI 建立的簡單機器學習模型預測 API，  
+- 這是一個使用 FastAPI 建立的簡單機器學習模型預測 API，  
 用來預測鳶尾花（Iris）的三個品種：setosa、versicolor、virginica。
 
-模型使用 scikit-learn 的 RandomForestClassifier 訓練，  
+- 模型使用 scikit-learn 的 RandomForestClassifier 訓練，  
 特徵為：sepal length、sepal width、petal length、petal width。
 
-# 專案結構
-
+## 專案結構
+```markdown
 iris-api/
 ├── main.py             # FastAPI 主程式
 ├── train_iris.py       # 訓練並產生模型的腳本
@@ -23,14 +23,14 @@ iris-api/
 
 ### 1. 建立虛擬環境（建議使用 conda）
 
-```bash
+```
 conda create -n iris-api python=3.11
 conda activate iris-api
 ```
 
 ### 2. 安裝必要套件
 
-```bash
+```
 # 先用 conda 安裝科學計算套件
 conda install numpy scikit-learn -c conda-forge
 
@@ -40,13 +40,13 @@ pip install -r requirements.txt
 
 ### 3. 產生模型（如果 models/ 資料夾裡沒有 iris_model.pkl）
 
-```bash
+```
 python train_iris.py
 ```
 
 ### 4. 啟動 API 服務
 
-```bash
+```
 uvicorn main:app --reload
 ```
 
@@ -103,6 +103,20 @@ http://127.0.0.1:8000/docs
 - 0 → setosa
 - 1 → versicolor
 - 2 → virginica
+
+## 線上部署版本（Render.com）
+
+API 已成功部署到 Render.com，可直接透過網頁使用：
+
+- **Swagger 互動文件**（推薦）：  
+  https://iris-fastapi-n0v1.onrender.com/docs
+
+- **健康檢查端點**：  
+  https://iris-fastapi-n0v1.onrender.com/health
+
+**注意**：  
+使用免費方案，服務在長時間無人訪問後會自動休眠，第一次請求可能需要 10–60 秒喚醒。
+
 
 ---
 最後更新：2026.02
