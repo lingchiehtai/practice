@@ -8,6 +8,12 @@ from typing import List
 import os
 from contextlib import asynccontextmanager
 
+# 定義全域變數
+# Global model (最關鍵)
+model = None
+class_names = ["setosa", "versicolor", "virginica"]
+
+
 #先定義 lifespan（放在 app 建立之前）
 @asynccontextmanager 
 async def lifespan(app: FastAPI):
@@ -45,9 +51,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global model (最關鍵)
-model = None
-class_names = ["setosa", "versicolor", "virginica"]
 
 
 
