@@ -1,11 +1,21 @@
 # main.py
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import pickle
 import numpy as np
 from typing import List
 
 app = FastAPI(title="Iris Prediction API", version="1.0")
+
+#新增 CORS 中介層，讓它只允許特定的來源
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],          # 目前先用 *，測試完再改成特定網址
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Global model (最關鍵)
 model = None
