@@ -44,6 +44,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",     # 如果你有本地前端(前端常見的本地測試port)
         "http://127.0.0.1:3000",
+        "http://localhost:8001",     # 新增這一行
+        "http://127.0.0.1:8001",     # 新增這一行
         # "https://你的前端網址.com",   # 等上線時再加進去
     ],
     allow_credentials=True,
