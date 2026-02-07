@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>鳶尾花品種預測</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #result {
+      margin-top: 30px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      min-height: 100px;
+    }
+    #loading {
+      display: none;
+      margin-top: 10px;
+      color: #666;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>鳶尾花(Iris) 品種預測</h1>
+
+  <div class="form-group">
+    <label for="sepal_length">花萼長度 (sepal length)</label>
+    <input type="number" step="0.1" id="sepal_length" value="5.1" required />
+  </div>
+
+  <div class="form-group">
+    <label for="sepal_width">花萼寬度 (sepal width)</label>
+    <input type="number" step="0.1" id="sepal_width" value="3.5" required />
+  </div>
+
+  <div class="form-group">
+    <label for="petal_length">花瓣長度 (petal length)</label>
+    <input type="number" step="0.1" id="petal_length" value="1.4" required />
+  </div>
+
+  <div class="form-group">
+    <label for="petal_width">花瓣寬度 (petal width)</label>
+    <input type="number" step="0.1" id="petal_width" value="0.2" required />
+  </div>
+
+  <button onclick="predict()">預測</button>
+
+  <div id="loading">正在連線，請稍候...</div>
+  <div id="result"></div>
+
+  <script>
+    async function predict() {
+      const loading = document.getElementById('loading');
+      const resultDiv = document.getElementById('result');
+
+      // 先清空之前的結果
+      resultDiv.innerHTML = '';
+      loading.style.display = 'block';
+
+      // 取得輸入值
+      const sepal_length = parseFloat(document.getElementById('sepal_length').value);
+      const sepal_width  = parseFloat(document.getElementById('sepal_width').value);
+      const petal_length = parseFloat(document.getElementById('petal_length').value);
+      const petal_width  = parseFloat(document.getElementById('petal_width').value);
+
+      // 準備要送出的資料
+      const data = {
+        sepal_length,
+        sepal_width,
+        petal_length,
+        petal_width
+      };
+
+      try {
+        const response = await fetch('https://iris-fastapi-n0v1.onrender.com/predict', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP 錯誤：${response.status}`);
+        }
+
+        const result = await response.json();
+
+        // 顯示結果
+        resultDiv.innerHTML = `
+          <strong>預測結果：</strong> ${result.prediction}<br>
+          <strong>信心度：</strong> ${(result.probability * 100).toFixed(1)}%<br>
+          <strong>各類別機率：</strong><br>
+          setosa: ${(result.probabilities[0] * 100).toFixed(1)}%<br>
+          versicolor: ${(result.probabilities[1] * 100).toFixed(1)}%<br>
+          virginica: ${(result.probabilities[2] * 100).toFixed(1)}%
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `<strong style="color: red;">錯誤：</strong> ${error.message}<br>（第一次連線可能較慢，請再試一次）`;
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+  </script>
+
+</body>
+</html>
