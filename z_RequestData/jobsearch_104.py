@@ -8,7 +8,7 @@ filename = 'jobsearch_data104.xlsx'
 
 list1 = []
 output = 0
-jobkind = '數據工程師'
+jobkind = '資料工程師'
 pageMax = 2
 
 # 加入 Headers 模擬瀏覽器，避免被擋
@@ -120,13 +120,16 @@ for ipageNum in range(1, pageMax + 1):
             if salary_low and salary_high and salary_low != '0' and salary_high != '0':
                 low = int(salary_low)
                 high = int(salary_high)
-                if low >= 500000:  # 判斷為年薪（通常50萬以上）
+                if high >= 9999990:  # 或你觀察到的實際極大值
+                    jobSalary = f"月薪 {low:,}元以上"
+                elif low >= 500000:
                     jobSalary = f"年薪 {low:,} ~ {high:,}元"
                 else:
                     jobSalary = f"月薪 {low:,} ~ {high:,}元"
             elif salary_low and salary_low != '0':
                 low = int(salary_low)
                 jobSalary = f"月薪 {low:,}元以上"
+
             else:
                 jobSalary = job.get('salaryDesc') or '待遇面議'
 
