@@ -41,15 +41,17 @@ app = FastAPI(
 #新增 CORS 中介層，讓它只允許特定的來源
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",     # 如果你有本地前端(前端常見的本地測試port)
-        "http://127.0.0.1:3000",
-        "http://localhost:8001",     # 新增這一行
-        "http://127.0.0.1:8001",     # 新增這一行
-        "https://iris-fastapi-n0v1.onrender.com/docs"
-        # "https://你的前端網址.com",   # 等上線時再加進去
-    ],
-    allow_credentials=True,
+    # allow_origins=[
+    #     "http://localhost:3000",     # 如果你有本地前端(前端常見的本地測試port)
+    #     "http://127.0.0.1:3000",
+    #     "http://localhost:8001",     # 新增這一行
+    #     "http://127.0.0.1:8001",     # 新增這一行
+    #     "https://iris-fastapi-n0v1.onrender.com/docs"
+    #     # "https://你的前端網址.com",   # 等上線時再加進去
+    # ],
+    # allow_credentials=True,
+    allow_origins=["*"],  # 允許所有網域存取
+    allow_credentials=False, # 注意：當使用 "*" 時，此項通常需設為 False
     allow_methods=["*"],
     allow_headers=["*"],
 )
