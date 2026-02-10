@@ -9,7 +9,7 @@ filename = 'jobsearch_data104.xlsx'
 list1 = []
 output = 0
 jobkind = '資料工程師'
-pageMax = 2
+pageMax = 5
 
 # 加入 Headers 模擬瀏覽器，避免被擋
 headers = {
