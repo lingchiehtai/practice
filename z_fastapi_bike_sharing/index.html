@@ -82,15 +82,21 @@
 
     <button onclick="predictDemand()">進行AI預測分析</button>
 
-    <div id="resultBox">
-        <p style="margin: 0; color:#000000; font-size: 24px;">預估租借量</p>
-        <div class="count" id="predictCount">0</div>
+	<div id="resultBox">
+		<p style="margin: 0; color:#000000; font-size: 24px; font-weight: bold;">預估租借數量</p>
+		<div class="count" id="predictCount">0</div>
+
+		<p style="font-size: 24px; color: #2c3e50; font-weight: 700; margin-top: 15px; margin-bottom: 10px; text-align: center;">
+            <i class="fas fa-chart-line" style="margin-right: 8px;"></i> 預測趨勢紀錄
+        </p>
+
+		<div style="height: 180px; width: 100%;">
+			<canvas id="historyChart"></canvas>
+		</div>
+        		
         <p id="statusMsg" style="color: #5d6d7e; font-weight: 500; font-size: 14px; margin-bottom: 10px;"></p>
 
-        <div style="height: 180px; width: 100%; margin-top: 10px;">
-            <canvas id="historyChart"></canvas>
-        </div>
-    </div>
+	</div>
 </div>
 
 <script>
@@ -112,20 +118,35 @@
             myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['1', '2', '3', '4', '5', '6', '7'], // 代表最近幾次的紀錄
+                    labels: ['1', '2', '3', '4', '5', '6', '7'],
                     datasets: [{
                         label: '需求趨勢',
                         data: historyData,
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderColor: '#2980b9', // 使用藍色系一致化
+                        backgroundColor: 'rgba(41, 128, 185, 0.1)',
                         fill: true,
-                        tension: 0.4 // 讓線條變圓滑
+                        tension: 0.4 
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true } }
+                    plugins: {
+                        legend: {
+                            display: false, // <--- 這裡設為 false，圖例就會消失
+                            position: 'right', // <--- 將圖例移到右邊
+                            labels: { boxWidth: 12, font: { size: 12 } }
+                        }
+                    },
+                    scales: { 
+                        y: { 
+                            beginAtZero: true,
+                            ticks: { font: { size: 12 } } // 稍微縮小座標字體，讓畫面更精緻
+                        },
+                        x: {
+                            ticks: { font: { size: 12 } }
+                        }
+                    }
                 }
             });
         }
