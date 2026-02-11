@@ -11,6 +11,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=False, #注意：當allow_origins使用 "*" 時，此項通常需設為 False
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -40,20 +41,29 @@ def read_root():
 # 3. 預測路由
 @app.post("/predict")
 async def predict_bike(data: BikeQuery):
-    # 將輸入轉換為模型需要的陣列格式
-    # 順序必須與 features_list 一致
-    input_features = np.array([[
-        data.hour, data.temp, data.humidity, data.wind_speed,
-        data.solar_rad, data.rainfall, data.snowfall,
-        data.seasons, data.holiday, data.month, data.day_of_week
-    ]])
-    
-    # 執行預測
-    prediction = model.predict(input_features)[0]
-    
-    # 四捨五入並確保不小於 0
-    final_count = max(0, int(round(prediction)))
 
+    # 將 data 物件轉換成字典，並手動對應當初模型訓練時的欄位名稱
+    input_dict = {
+        "Hour": data.hour,
+        "Temperature(C)": data.temp,
+        "Humidity(%)": data.humidity,
+        "Wind speed (m/s)": data.wind_speed,
+        "Solar Radiation (MJ/m2)": data.solar_rad,
+        "Rainfall(mm)": data.rainfall,
+        "Snowfall (cm)": data.snowfall,
+        "Seasons": data.seasons,
+        "Holiday": data.holiday,
+        "Month": data.month,
+        "DayOfWeek": data.day_of_week
+    }
+    
+    # 3. 轉換為 DataFrame
+    input_df = pd.DataFrame([input_dict])
+    
+    # 4. 預測
+    prediction = model.predict(input_df)[0]
+
+    final_count = int(max(0, prediction))
     return {
         "predicted_count": final_count,
         "status": "success",
