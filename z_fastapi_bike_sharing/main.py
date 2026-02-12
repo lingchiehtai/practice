@@ -31,7 +31,7 @@ class BikeQuery(BaseModel):
     rainfall: float
     snowfall: float
     seasons: int     # 0:Autumn, 1:Spring, 2:Summer, 3:Winter (依照 LabelEncoder 結果)
-    holiday: int     # 0:Holiday, 1:No Holiday
+    holiday: int     # 0:Holiday, 1:No Holiday 
     month: int
     day_of_week: int # 0:Mon, 6:Sun
 
