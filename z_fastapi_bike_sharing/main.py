@@ -46,7 +46,7 @@ async def read_index():
 # 3. 預測路由
 @app.post("/predict")
 async def predict_bike(data: BikeQuery):
-
+    print(f"收到預測請求: {data}")
     # 將 data 物件轉換成字典，並手動對應當初模型訓練時的欄位名稱
     input_dict = {
         "Hour": data.hour,
@@ -65,12 +65,22 @@ async def predict_bike(data: BikeQuery):
     # 3. 轉換為 DataFrame
     input_df = pd.DataFrame([input_dict])
     
-    # 4. 預測
-    prediction = model.predict(input_df)[0]
+    # ✅ 新增：在 Logs 輸出輸入的資料（可選）
+    print(f"--- 收到預測請求 ---")
+    print(f"輸入特徵摘要: {input_dict}")
 
-    final_count = int(max(0, prediction))
-    return {
-        "predicted_count": final_count,
-        "status": "success",
-        "message": f"預測該時段租借需求量為 {final_count} 輛"
-    }
+    # 4. 預測
+    try:
+        prediction = model.predict(input_df)[0]
+
+        final_count = int(max(0, prediction))
+        print(f"預測結果: {final_count} 輛")
+
+        return {
+            "predicted_count": final_count,
+            "status": "success",
+            "message": f"預測該時段租借需求量為 {final_count} 輛"
+        }
+    except Exception as e:
+        print(f"❌ 預測出錯: {str(e)}")
+        return {"status": "error", "message": str(e)}
