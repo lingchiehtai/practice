@@ -212,12 +212,12 @@
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json'  // 告訴後端，我傳過去的是 JSON 格式
                 },
                 body: JSON.stringify(payload)
             });
             if (!response.ok) throw new Error(`HTTP 錯誤! 狀態碼: ${response.status}`);
-            const data = await response.json();
+            const data = await response.json(); // 解析後端回傳的 JSON 資料
             //console.log("後端回傳結果：", data);
 
             document.getElementById('resultBox').style.display = 'block';
