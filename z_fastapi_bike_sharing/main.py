@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 import joblib
 import numpy as np
 import pandas as pd
@@ -34,9 +35,13 @@ class BikeQuery(BaseModel):
     month: int
     day_of_week: int # 0:Mon, 6:Sun
 
+# @app.get("/")
+# def read_root():
+#     return {"message": "Seoul Bike Demand Prediction API is running"}
 @app.get("/")
-def read_root():
-    return {"message": "Seoul Bike Demand Prediction API is running"}
+async def read_index():
+    # 這會讓瀏覽器打開網址時，直接載入你的 HTML 檔案
+    return FileResponse("index.html")
 
 # 3. 預測路由
 @app.post("/predict")
