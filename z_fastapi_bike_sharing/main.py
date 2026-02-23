@@ -62,14 +62,14 @@ async def predict_bike(data: BikeQuery):
         "DayOfWeek": data.day_of_week
     }
     
-    # 3. 轉換為 DataFrame
+    # 轉換為 DataFrame
     input_df = pd.DataFrame([input_dict])
     
-    # ✅ 新增：在 Logs 輸出輸入的資料（可選）
+    # 在 Logs 輸出輸入的資料
     print(f"--- 收到預測請求 ---")
     print(f"輸入特徵摘要: {input_dict}")
 
-    # 4. 預測
+    # 預測數量
     try:
         prediction = model.predict(input_df)[0]
 
