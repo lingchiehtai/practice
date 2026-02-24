@@ -2,13 +2,12 @@
 
 🚀 **線上展示網址**(https://fastapi-bike-sharing.onrender.com/)
 
-# **專案技術總結 (README.md)**
 
 # 🚲 共享單車需求 AI 預估系統
 
 這是一個基於 **Seoul Bike Sharing Demand** 數據集的端到端（End-to-End）機器學習專案。本系統旨在透過 AI 預測模型，幫助城市調度人員或使用者預估特定時段的單車需求量。
 
-### ## **1. 專案亮點 (Key Highlights)**
+## **1. 專案亮點 (Key Highlights)**
 
 * **精準建模**：使用隨機森林回歸 (Random Forest Regressor) 進行訓練，R² 分數達到 **0.84**。
 
@@ -16,18 +15,17 @@
 * 高效能後端：利用 FastAPI 處理非同步請求，確保預測回饋毫秒級完成。
 * 動態趨勢圖表：整合 Chart.js，即時記錄並顯示最近 7 次的預測數值，協助使用者觀察需求波動趨勢。
 
----
 
-### ## **2. 技術棧 (Tech Stack)**
+## **2. 技術棧 (Tech Stack)**
 
 * **數據分析與模型**：Python, Pandas, Scikit-learn, Joblib
 * **後端框架**：FastAPI, Uvicorn
 * **前端技術**：HTML5, CSS3 (Grid/Flexbox), JavaScript (Fetch API)
 * 數據視覺化：Chart.js
 
----
 
-### ## **3. 特徵工程細節 (Feature Engineering)**
+
+## **3. 特徵工程細節 (Feature Engineering)**
 
 專案處理了共 11 個關鍵特徵，並針對使用者直覺進行了轉換：
 
@@ -41,19 +39,18 @@
 
 
 
----
 
-### ## **4. 系統架構 (Architecture)**
+## **4. 系統架構 (Architecture)**
 
 1. **訓練階段**：透過 `train.py` 清洗數據，處理類別變數與缺失值，並將訓練好的模型序列化為 `.joblib` 檔案。
 2. **API 階段**：`main.py` 載入模型，建立 POST 接口接收 JSON 資料。
 3. **前端階段**：`index.html` 提供圖形化介面，與後端 API 進行異步通訊並動態更新 DOM 顯示結果。
 
----
 
-### ## **5. 如何執行 (Quick Start)**
 
-#### **方法 A：使用 Docker 執行 (推薦)**
+## **5. 如何執行 (Quick Start)**
+
+### **方法 A：使用 Docker 執行 (推薦)**
 
 這是最快速且環境隔離的方式，不需手動安裝 Python 依賴。
 
@@ -69,14 +66,14 @@ docker build -t bike-app .
 docker run -p 8080:8000 --env PORT=8000 bike-app
 
 ```
-
+- 在 Docker 模式下，我們使用的是 `8080` 映射到容器內的 `8000`。
 
 3. **瀏覽預測網頁**：
 開啟瀏覽器訪問 `http://localhost:8080`
 
 ---
 
-#### **方法 B：本地手動開發**
+### **方法 B：本地手動開發**
 
 如果你需要修改程式碼並即時預覽效果，請使用此方式。
 
@@ -100,21 +97,8 @@ uvicorn main:app --reload
 
 
 
----
 
-### ## **💡 更新重點說明**
-
-* **新增 Docker 指令**：讓使用者知道如何透過 `build` 和 `run` 快速跑起來。
-* **明確 Port 資訊**：在 Docker 模式下，我們使用的是 `8080` 映射到容器內的 `8000`。
-* **區分執行環境**：讓開發者可以根據需求選擇最適合的啟動方式。
-
----
-
-**你需要我幫你把這段更新到你的 `README.md` 檔案中嗎？或者有其他部署指令（如 Render）也想一併加入？**
-
----
-
-### ## **6. 預測結果展示**
+## **6. 預測結果展示**
 
 系統會根據輸入產出具體的租借數量預估。例如：
 
