@@ -9,7 +9,7 @@
 ### 📊 資料分析 / 機器學習 /️ 實用工具 / 應用
 
 * **practice1_hotel_room_rate**
-  * 旅館房價資料分析，探討價格分布與影響因素
+  - 旅館房價資料分析，探討價格分布與影響因素
 * **practice2_Web App**
   * 即時氣象看板 
   * 景點美食清單 :  以 Google Apps Script + HTML 從 Google Sheet 讀取資料並動態呈現清單 
