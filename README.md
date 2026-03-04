@@ -31,8 +31,9 @@
 
 * Python
 * Pandas / NumPy / Matplotlib
+* TensorFlow (including Keras module)
 * 機器學習（Regression、Image Classification）
 * HTML / JavaScript
 * Google Apps Script
 * MySQL
-
+* FastAPI、 Docker
