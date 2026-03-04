@@ -8,20 +8,30 @@
 ---
 
 ### **Practice1_Hotel_Room_Rate**
-  * 旅館房價資料分析，探討價格分布與影響因素
+* 旅館房價資料分析，探討價格分布與影響因素
+
 ### **Practice2_Web App**
-  * 即時氣象看板 : 提供台灣即時、觀測、預報之氣象資訊。
-  * 景點美食清單 :  以 Google Apps Script + HTML 從 Google Sheet 讀取資料並動態呈現清單 
+* 即時氣象看板 : 提供台灣即時、觀測、預報之氣象資訊。
+* 景點美食清單 :  以 Google Apps Script + HTML 從 Google Sheet 讀取資料並動態呈現清單 
+
 ### **Practice3_Photo Rename**
-  * 參考自訂的筆記，結合 AI（如 Gemini）為照片重新命名加上描述性的關鍵字
+* 參考自訂的筆記，結合 AI（如 Gemini）為照片重新命名加上描述性的關鍵字
+
 ### **Practice4_Image_Classification**
-  * 三類影像分類模型實作，完成訓練與預測流程
+* 三類影像分類模型實作，完成訓練與預測流程
+
 ### **Practice5_Regression + AI模型雲端自動化部署**
-  * 首爾自行車需求資料，使用迴歸模型進行分析
+* 首爾自行車需求資料，使用迴歸模型進行分析
+
 ### **Practice6_MySQL**
-  * 使用 MySQL 進行員工餐點資料統計與分析
+* 使用 MySQL 進行員工餐點資料統計與分析
+
 ### **Practice7_JMA_Weather**
-  * 日本氣象廳（JMA）天氣資料分析與整理
+* 日本氣象廳（JMA）天氣資料分析與整理
+  
+### **z_fastapi_bike_sharing**
+* 城市共享單車需求 AI 預估系統
+
 ### **z_penguins**
   * Penguins 資料集分析，包含缺失值處理、類別編碼與視覺化，並使用 Seaborn 和 Matplotlib 繪製資料的關係圖。
 
