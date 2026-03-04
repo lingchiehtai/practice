@@ -31,6 +31,8 @@
   
 ### **z_fastapi_bike_sharing**
 * 城市共享單車需求 AI 預估系統
+* FastAPI 架構與 Docker 容器化，並於雲端實現自動化部署。
+
 
 ### **z_penguins**
   * Penguins 資料集分析，包含缺失值處理、類別編碼與視覺化，並使用 Seaborn 和 Matplotlib 繪製資料的關係圖。
