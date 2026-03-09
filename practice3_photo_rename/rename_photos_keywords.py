@@ -28,8 +28,8 @@ PHOTO_DIRECTORY = Path('.')
 NOTES_FILE = 'mynote.txt'
 
 # 4. Gemini model configuration
-#MODEL_NAME = "gemini-2.5-pro"  #每日要求數(RPD)=100
-MODEL_NAME = "gemini-2.5-flash"  # 每日要求數(RPD)=250
+#MODEL_NAME = "gemini-2.5-pro"  
+MODEL_NAME = "gemini-2.5-flash"  
 
 # --- End of Configuration ---
 
@@ -42,7 +42,8 @@ def parse_notes(file_path):
     """
     notes = {}
     if not file_path.exists():
-        print(f"Warning: Notes file '{file_path}' not found.")
+        #print(f"Warning: Notes file '{file_path}' not found.")
+        print(f"Warning: Notes file '{file_path}' not found. AI will analyze images directly.")
         return notes
 
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -72,7 +73,8 @@ def get_files_to_rename(directory):
     unnamed_files = []
     # This regex matches filenames like '2025-09-10_51.jpg' but not '2025-09-10_51_keyword.jpg'
     # It ensures we don't try to rename files that already have descriptive keywords.
-    pattern = re.compile(r'^\d{4}-\d{2}-\d{2}_\d{1,}\.(jpg|jpeg|png)$', re.IGNORECASE)
+    #pattern = re.compile(r'^\d{4}-\d{2}-\d{2}_\d{1,}\.(jpg|jpeg|png)$', re.IGNORECASE)
+    pattern = re.compile(r'^(\d{4}-\d{2}-\d{2}_\d{1,}|\d+\s*\(\d+\))\.(jpg|jpeg|png)$', re.IGNORECASE)
     
     for file_path in directory.iterdir():
         if file_path.is_file() and pattern.match(file_path.name):
@@ -89,6 +91,17 @@ def generate_new_filename(client_dict, image_path, notes_for_date):
     """
     original_stem = image_path.stem
     original_suffix = image_path.suffix
+    
+    #有筆記 → 告訴 AI 參考這些筆記」
+    if notes_for_date and notes_for_date.strip():
+        notes_section = f"""**Context from notes for this day:**
+    ---
+    {notes_for_date}
+    ---"""
+    #沒筆記 → 告訴 AI 直接看圖片找關鍵字
+    else:
+        notes_section = """**Note:** No notes provided for this day. Analyze the image content directly to generate keywords."""
+    
     
     prompt = f"""
     You are an expert file renamer. Your task is to analyze the provided image and the context from the text notes for that day.
@@ -209,10 +222,15 @@ def main():
             
             # 提取日期 Extract date from filename (e.g., '2025-09-12' -> '9/12')
             try:
-                date_parts = file_path.stem.split('_')[0].split('-')
-                month = int(date_parts[1])
-                day = int(date_parts[2])
-                notes_key = f"{month}/{day}"
+                # 先嘗試從標準格式 YYYY-MM-DD_NUM 中提取日期
+                if '_' in file_path.stem and '-' in file_path.stem.split('_')[0]:
+                    date_parts = file_path.stem.split('_')[0].split('-')
+                    month = int(date_parts[1])
+                    day = int(date_parts[2])
+                    notes_key = f"{month}/{day}"
+                else:
+                    # 如果沒有日期格式，使用空字串作為 notes_key（無筆記）
+                    notes_key = ""
             except (IndexError, ValueError):
                 print(f"  - Could not parse date from filename. Skipping.")
                 continue
