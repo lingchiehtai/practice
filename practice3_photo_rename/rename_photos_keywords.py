@@ -28,8 +28,11 @@ PHOTO_DIRECTORY = Path('.')
 NOTES_FILE = 'mynote.txt'
 
 # 4. Gemini model configuration
-#MODEL_NAME = "gemini-2.5-pro"  
-MODEL_NAME = "gemini-2.5-flash"  
+#MODEL_NAME = "gemini-2.5-flash"
+MODEL_NAME = "gemini-3-flash-preview"  
+#MODEL_NAME = "gemini-3.1-flash-lite-preview" 
+  
+print(f"使用的模型為: {MODEL_NAME}")
 
 # --- End of Configuration ---
 
@@ -142,10 +145,17 @@ def generate_new_filename(client_dict, image_path, notes_for_date):
                 contents = [prompt, image_file],
             )
             
+
             # 成功後刪除遠端檔案
             client.files.delete(name=image_file.name)
             
-            new_name = response.text.strip().replace('\n', '')
+            #new_name = response.text.strip().replace('\n', '')
+            # 1. 取得所有文字 Part 並組合成字串，同時過濾掉非文字的 thought_signature
+            combined_text = "".join([part.text for part in response.candidates[0].content.parts if part.text])
+
+            # 2. 進行原本的清理與格式檢查
+            new_name = combined_text.strip().replace('\n', '')
+
             if new_name.startswith(original_stem) and new_name.endswith(original_suffix):
                 return new_name
             else:
