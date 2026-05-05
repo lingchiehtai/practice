@@ -1,5 +1,5 @@
 
-# 景點美食清單（Google Apps Script Web App）
+# 景點餐廳清單（Google Apps Script Web App）
 
 本專案是一個以 **Google Apps Script (GAS)** 為後端、
 **HTML + Tailwind CSS** 為前端的輕量 Web App，
