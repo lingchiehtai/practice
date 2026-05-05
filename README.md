@@ -6,27 +6,26 @@
 ## 內容: 
 📊 資料分析｜🤖 機器學習｜🛠️ 實用工具｜🌐 Web 應用
 ---
+### **Practice 1：Regression + AI模型雲端自動化部署**
+* 首爾自行車需求資料，使用迴歸模型進行分析
 
-### **Practice1_Hotel_Room_Rate**
-* 旅館房價資料分析，探討價格分布與影響因素
-
-### **Practice2_Web App**
+### **Practice 2：Web App**
 * 即時氣象看板 : 提供台灣即時、觀測、預報之氣象資訊。
 * 景點美食清單 :  以 Google Apps Script + HTML 從 Google Sheet 讀取資料並動態呈現清單 
 
-### **Practice3_Photo Rename**
+### **Practice 3：Photo Rename**
 * 參考自訂的筆記，結合 AI（如 Gemini）為照片重新命名加上描述性的關鍵字
 
-### **Practice4_Image_Classification**
+### **Practice 4：Image Classification**
 * 三類影像分類模型實作，完成訓練與預測流程
 
-### **Practice5_Regression + AI模型雲端自動化部署**
-* 首爾自行車需求資料，使用迴歸模型進行分析
+### **Practice 5：Hotel Room Rate Analysis**
+* 旅館房價資料分析，探討價格分布與影響因素
 
-### **Practice6_MySQL**
+### **Practice 6：MySQL**
 * 使用 MySQL 進行員工餐點資料統計與分析
 
-### **Practice7_JMA_Weather**
+### **Practice 7：JMA Weather Analysis**
 * 日本氣象廳（JMA）天氣資料分析與整理
   
 ### **z_fastapi_bike_sharing**
