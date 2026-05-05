@@ -12,8 +12,6 @@ classification for Rock-Paper-Scissors Images dataset
       的變化過程繪製成圖表。最後，載入訓練好的模型來預測新圖片的類別。
 """
 
-
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
