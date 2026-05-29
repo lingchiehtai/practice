@@ -20,7 +20,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: linear-gradient(160deg, #a8d8f0 0%, #ceeafa 30%, #e0f4fd 60%, #b8e2f5 100%);
+    background: linear-gradient(150deg, #a8d8f0 0%, #ceeafa 30%, #e0f4fd 60%, #b8e2f5 100%);
     background-attachment: fixed;
     color: var(--ink);
     font-family: 'Noto Serif TC', serif;
@@ -36,10 +36,11 @@
     z-index: 0;
   }
 
+  /*整頁的外層容器*/
   .container {
     max-width: 780px;
     margin: 0 auto;
-    padding: 60px 4px 80px;
+    padding: 20px 4px 80px;
     position: relative;
     z-index: 1;
   }
@@ -51,25 +52,31 @@
     position: relative;
   }
 
+  
+  /*上方裝飾線*/
+  /*.header::before { display: none; }*/
+  
+  /*下方裝飾線*/
   .header::before, .header::after {
     content: '';
     display: block;
     height: 1px;
     background: linear-gradient(to right, transparent, var(--gold), transparent);
-    margin: 20px auto;
+    margin: 16px auto;
     width: 60%;
   }
 
   .route-label {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: 13px;
+    font-size: 15px;
     letter-spacing: 4px;
     color: var(--mist);
     text-transform: uppercase;
-    margin-bottom: 16px;
+    margin-bottom: 4px;
   }
 
+  /*最上方大標題的樣式*/
   .title-jp {
     font-family: 'Microsoft JhengHei', '微軟正黑體', 'PingFang TC', 'Heiti TC', sans-serif;
     font-size: clamp(32px, 6vw, 52px);
@@ -77,7 +84,7 @@
     letter-spacing: 6px;
     color: var(--ink);
     line-height: 1.4;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
 
   .title-sub {
@@ -86,18 +93,19 @@
     letter-spacing: 3px;
   }
 
+  /*城市名橫排列*/
   .cities-strip {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
-    margin-top: 24px;
+    margin-top: 18px;
     flex-wrap: wrap;
   }
 
   .city-tag {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 13px;
+    font-size: 16px;
     color: var(--rust);
     letter-spacing: 2px;
   }
@@ -347,7 +355,7 @@
 <div class="container">
 
   <header class="header">
-    <div class="route-label">Japan · Chubu Region · 7 Days</div>
+  
     <div class="title-jp">日本中部<br>悠閒自然路線</div>
 
     <div class="cities-strip">
