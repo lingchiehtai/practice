@@ -35,9 +35,7 @@ class BikeQuery(BaseModel):
     month: int
     day_of_week: int # 0:Mon, 6:Sun
 
-# @app.get("/")
-# def read_root():
-#     return {"message": "Seoul Bike Demand Prediction API is running"}
+
 @app.get("/")
 async def read_index():
     # 這會讓瀏覽器打開網址時，直接載入你的 HTML 檔案
