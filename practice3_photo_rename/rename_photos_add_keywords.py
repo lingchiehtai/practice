@@ -177,7 +177,7 @@ def generate_new_filename(client_dict, image_path, notes_for_date):
                     # 使用新 Key 重試當前檔案
                     continue 
                 else:
-                    print("\n❌ 所有 API Key 額度均已耗盡。腳本將強制停止。")
+                    print("\n⚠️ 所有 API Key 均已耗盡...")
                     raise 
 
             # 2. 處理 503 錯誤 (服務暫時不可用)
