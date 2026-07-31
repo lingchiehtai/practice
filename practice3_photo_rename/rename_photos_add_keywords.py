@@ -270,9 +270,9 @@ def main():
         # 捕捉任何未預期的例外狀況（如 API 額度耗盡）
         error_msg = str(e)
         if "所有 API Key 額度均已耗盡" in error_msg or "Quota exceeded" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
-            print(f"\n⚠️  API 額度已耗盡，停止處理剩餘檔案。")
+            print(f"\n⚠️ API 額度已耗盡，停止處理剩餘檔案。")
         else:
-            print(f"\n⚠️  發生錯誤，停止處理: {error_msg}")
+            print(f"\n⚠️ 發生錯誤，停止處理: {error_msg}")
     
    # 輸出統計結果
     print(f"\n{'='*50}")
