@@ -29,9 +29,9 @@ NOTES_FILE = 'mynote.txt'
 
 # 4. Gemini model configuration
 #MODEL_NAME = "gemini-2.5-flash"
-MODEL_NAME = "gemini-3-flash-preview"  
-#MODEL_NAME = "gemini-3.1-flash-lite-preview" 
-  
+#MODEL_NAME = "gemini-3-flash-preview"  
+MODEL_NAME = "gemini-3.5-flash"
+
 print(f"使用的模型為: {MODEL_NAME}")
 
 # --- End of Configuration ---
