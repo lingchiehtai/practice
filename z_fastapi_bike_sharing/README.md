@@ -69,6 +69,9 @@ uvicorn main:app --reload
 http://127.0.0.1:8000
 ```
 * **API 文件**：`http://127.0.0.1:8000/docs`
+
+* **優點**：開發快、熱重載（改程式碼自動重啟）
+* **缺點**：需本機已安裝 Python、相依套件
 ---
 ### **方法 B：使用 Docker 容器化部署模式**
 
@@ -97,6 +100,8 @@ http://localhost:8080
 * 停止容器，執行： `docker stop running-app`
 * 移除容器，執行：`docker rm running-app`
 
+* **優點**：環境隔離、不需本機安裝套件、可部署到任何有 Docker 的地方
+* **缺點**：建置較慢、修改程式需重新 build
 
 ---
 

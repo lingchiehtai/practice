@@ -41,6 +41,12 @@ async def read_index():
     # 這會讓瀏覽器打開網址時，直接載入你的 HTML 檔案
     return FileResponse("index.html")
 
+#加背景圖
+@app.get("/bike-background.png")
+async def bike_background():
+    return FileResponse("bike-background.png", media_type="image/png")
+
+
 # 3. 預測路由
 @app.post("/predict")
 async def predict_bike(data: BikeQuery):
