@@ -11,9 +11,9 @@ app = FastAPI()
 # 解決跨域問題 (與原本設定一致)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"], #允許任何網站呼叫這個 API (開發階段測試才這樣設)
     allow_credentials=False, #注意：當allow_origins使用 "*" 時，此項通常需設為 False
-    allow_methods=["*"],
+    allow_methods=["*"], #允許所有 HTTP 方法（GET、POST、PUT、DELETE...）
     allow_headers=["*"],
 )
 
@@ -22,7 +22,7 @@ model = joblib.load('seoul_bike_model.joblib')
 features_list = joblib.load('features_list.joblib')
 
 # 2. 定義資料模型 (依照 train.py 中的 features 順序)
-class BikeQuery(BaseModel):
+class BikeQuery(BaseModel): #繼承 pydantic 的 BaseModel，資料驗證
     hour: int
     temp: float
     humidity: float
@@ -34,7 +34,7 @@ class BikeQuery(BaseModel):
     holiday: int     # 0:Holiday, 1:No Holiday 
     month: int
     day_of_week: int # 0:Mon, 6:Sun
-
+    #這些欄位名稱要跟 index.html 前端payload送過來的 JSON key 完全對應
 
 @app.get("/")
 async def read_index():
@@ -66,7 +66,7 @@ async def predict_bike(data: BikeQuery):
         "DayOfWeek": data.day_of_week
     }
     
-    # 轉換為 DataFrame
+    # 轉換為 DataFrame (這邊是只有一列的表格)
     input_df = pd.DataFrame([input_dict])
     
     # 在 Logs 輸出輸入的資料
