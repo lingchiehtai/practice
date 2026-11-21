@@ -8,21 +8,21 @@
 ### **1. Regression + AI模型雲端自動化部署**
 * 首爾自行車需求資料，使用迴歸模型進行分析
 
-### **2. Web App**
+### **2. 網頁 Web App**
 * **即時氣象看板** : 提供台灣即時、觀測、預報之氣象資訊。
 * **景點美食清單** :  以 Google Apps Script +  資料庫讀取資料並於前端網頁動態呈現清單 
 
-### **3. Photo Rename**
-* 參考自訂的筆記，結合 AI（如 Gemini）為照片重新命名加上描述性的關鍵字
-
-### **4. Image Classification**
-* 三種類手勢影像分類模型實作，完成訓練與預測流程
-
-### **5. Hotel Room Rate Analysis**
+### **3. Hotel Room Rate Analysis**
 * 旅館房價資料分析，探討價格分布與影響因素
 
-### **6. MySQL**
+### **4. MySQL**
 * 使用 MySQL 進行員工餐點資料統計與分析
+
+### **5. Image Classification**
+* 三種類手勢影像分類模型實作，完成訓練與預測流程
+
+### **6. Photo Rename**
+* 參考自訂的筆記，結合 AI（如 Gemini）為照片重新命名加上描述性的關鍵字
 
 ### **7. JMA Weather Analysis**
 * 日本氣象廳（JMA）天氣資料分析與整理
@@ -30,7 +30,6 @@
 ### **z_fastapi_bike_sharing**
 * 城市共享單車需求 AI 預估系統
 * FastAPI 架構與 Docker 容器化，並於雲端實現自動化部署。
-
 
 
 
